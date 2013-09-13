@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_name">MessagePicker</string>
+<string name="action_settings">Settings</string>
+<string name="description">
+本サービスは、LINEの通知情報を記録します。\n\n
+警告に表示されるようなテキストの収集などは一切行っておりませんので、ご安心ください。
+</string>
+<string name="tab1">日付別</string>
+<string name="tab2">名前別</string>
+
+</resources>
