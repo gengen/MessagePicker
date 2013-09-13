@@ -5,7 +5,7 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <com.markupartist.android.widget.PullToRefreshListView
+    <view class="org.g_okuyama.messagepicker.DateFragment$OverScrollListView"
             android:id="@+id/message_list_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/> 
