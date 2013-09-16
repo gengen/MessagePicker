@@ -9,5 +9,6 @@
 </string>
 <string name="tab1">日付別</string>
 <string name="tab2">名前別</string>
+<string name="error_msg">通知を取得できませんでした。</string>
 
 </resources>

@@ -35,7 +35,7 @@ public class MessagePickerService extends AccessibilityService {
         int et = event.getEventType();
 
         if(et == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED){
-        	//TODO:ãƒªãƒªãƒ¼ã‚¹æ™‚ã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã™ã‚‹ã“ã¨
+        	//TODO:ƒŠƒŠ[ƒX‚Í‚Í‚¸‚·
             //if(!(checkPackage(event))){
         	//return;
             //}
@@ -88,11 +88,22 @@ public class MessagePickerService extends AccessibilityService {
 
                     String name = text.get(16908310);
                     String contents = text.get(16908358);
-                    //getEventTimeã¯èµ·å‹•ã—ã¦ã‹ã‚‰ã®çµŒéæ™‚é–“ã—ã‹å–ã‚Œãªã„ãŸã‚ä½¿ç”¨ã—ãªã„
+                    //String info = text.get(16909082);
+                    //contents‚ªnull‚Ì‚Æ‚«‚ÍAƒCƒxƒ“ƒg‚©‚çƒeƒLƒXƒg‚ğæ“¾
+                    if(contents == null){
+                    	contents = event.getText().toString();
+                    	if(contents == null){
+                    		//ƒeƒLƒXƒg‚ànull‚Ìê‡‚ÍƒGƒ‰[ƒƒbƒZ[ƒW‚ğİ’è
+                    		contents = getString(R.string.error_msg);
+                    	}
+                    }
+                    else{
+                    }
+                    //getEventTime‚¾‚Æ‹N“®‚©‚ç‚ÌŠÔ‚µ‚©æ‚ê‚È‚¢‚½‚ßg—p‚µ‚È‚¢
                     //long time = event.getEventTime();
                     long time = System.currentTimeMillis();
-
-                    //DBã«ä¿å­˜
+                    
+                    //DB‚ÉŠi”[
                     ContentValues values = new ContentValues();
                     values.put("name", name);
                     values.put("contents", contents);
@@ -113,7 +124,7 @@ public class MessagePickerService extends AccessibilityService {
 
         Log.d(TAG, "cls = " + cls + "," + "pkg = " + pkg);
 
-        //ãƒ†ã‚¹ãƒˆç”¨ã«Gmailã‚’ç›£è¦–
+        //ƒeƒXƒg—p‚ÉGmailB‚±‚±‚ğLINE‚É•Ï‚¦‚é
         if(pkg.equalsIgnoreCase("com.google.android.gm")){
             return true;
         }
@@ -127,9 +138,7 @@ public class MessagePickerService extends AccessibilityService {
 
     @Override
     protected void onServiceConnected(){
-        Log.d(TAG, "onServiceConnected");
-
-        //ã‚µãƒ¼ãƒ“ã‚¹ãŒæœ‰åŠ¹ã«ã•ã‚ŒãŸã“ã¨ã‚’ä¿å­˜ã—ã¦ãŠã
+        //ƒAƒNƒZƒVƒrƒŠƒeƒB‚Å—LŒø‚É‚³‚ê‚½‚±‚Æ‚ğŠo‚¦‚Ä‚¨‚­
         SharedPreferences pref = getSharedPreferences(MessagePickerActivity.PREF_KEY, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putBoolean(MessagePickerActivity.AVAILABLE_KEY, true);
@@ -138,9 +147,7 @@ public class MessagePickerService extends AccessibilityService {
 
     @Override
     public boolean onUnbind(Intent intent){
-        Log.d(TAG, "onUnbind");
-
-        //ã‚µãƒ¼ãƒ“ã‚¹ãŒç„¡åŠ¹ã«ã•ã‚ŒãŸã“ã¨ã‚’ä¿å­˜ã—ã¦ãŠã
+    	//ƒAƒNƒZƒVƒrƒŠƒeƒB‚Å–³Œø‚É‚³‚ê‚½‚±‚Æ‚ğŠo‚¦‚Ä‚¨‚­
         SharedPreferences pref = getSharedPreferences(MessagePickerActivity.PREF_KEY, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putBoolean(MessagePickerActivity.AVAILABLE_KEY, false);
