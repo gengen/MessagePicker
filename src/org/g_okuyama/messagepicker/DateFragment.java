@@ -97,7 +97,7 @@ public class DateFragment extends Fragment {
         setListener();
     }
     
-    int getMessageNum(){
+    public int getMessageNum(){
         SQLiteDatabase db = mHelper.getWritableDatabase();
         String query = "select * from logtable";
         Cursor c = db.rawQuery(query, null);
@@ -124,28 +124,17 @@ public class DateFragment extends Fragment {
 				}
 			}        	
         });
-
-        //更新ボタン
-        Button button = (Button)mView.findViewById(R.id.refresh_tab1);
-        button.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v) {
-		    	//TODO:更新ダイアログ表示。更新がなくても1秒程度表示したほうがいい？
-				
-				int num = getMessageNum();
-				//TODO:リリース時ははずす
-				//if(num >= mMsgNum){
-					refreshMessage();
-					mMsgNum = num;
-				//}
-			}
-        });
     }
     
     //メッセージの更新
     void refreshMessage(){
+		int num = getMessageNum();
+		//TODO:リリース時ははずす
+		//if(num >= mMsgNum){
         clearView();
         setMessageList();
+		mMsgNum = num;
+		//}
     }
     
     void clearView(){

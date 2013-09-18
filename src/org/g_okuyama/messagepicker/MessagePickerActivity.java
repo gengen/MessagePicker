@@ -1,18 +1,19 @@
 package org.g_okuyama.messagepicker;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 
 public class MessagePickerActivity extends ActionBarActivity{
+	public static final String TAG = "MessagePicker";
     public static final String PREF_KEY = "pref";
     public static final String AVAILABLE_KEY = "available";
 
@@ -45,7 +46,44 @@ public class MessagePickerActivity extends ActionBarActivity{
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	// Handle presses on the action bar items
+    	switch (item.getItemId()) {
+    	case R.id.action_refresh:
+    		ActionBar bar = getSupportActionBar();
+    		int id = bar.getSelectedNavigationIndex();
+    		
+    		if(id == 0){
+        		Fragment fragment = this.getSupportFragmentManager().findFragmentByTag("tab1");
+        		if(fragment instanceof DateFragment){
+        			((DateFragment)fragment).refreshMessage();
+        		}    			
+    		}
+    		else if(id == 1){
+        		Fragment fragment = this.getSupportFragmentManager().findFragmentByTag("tab2");
+        		if(fragment instanceof CategoryFragment){
+        			//TODO:処理の追加
+        			//((CategoryFragment)fragment).refreshMessage();
+        			Log.d("hoge", "hoge");
+        		}    			
+    		}
+    		else{
+    			//nothing to do
+    		}
+
+    		return true;
+    		
+    	case R.id.action_settings:
+    		//TODO:処理の追加　設定でなくてリストクリアにするか？
+    		return true;
+    		
+    	default:
+    		return super.onOptionsItemSelected(item);
+    	}
     }
 
 	//デベロッパーページのサンプルのままだとタブ切り替え時に表示が重なる現象が発生したため、いくつか修正
