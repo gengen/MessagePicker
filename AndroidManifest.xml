@@ -24,14 +24,12 @@
             <activity 
 	            android:name="org.g_okuyama.messagepicker.MessagePickerActivity"
 	            android:label="@string/app_name" 
-	            android:theme="@style/Theme.AppCompat.Light"
-	            android:uiOptions="splitActionBarWhenNarrow">
+	            android:theme="@style/Theme.AppCompat.Light">
 	            <intent-filter>
 	                <action android:name="android.intent.action.MAIN" />
 	
 	                <category android:name="android.intent.category.LAUNCHER" />
 	            </intent-filter>
-                <meta-data android:name="android.support.UI_OPTIONS" android:value="splitActionBarWhenNarrow" /> 
 	        </activity>
 	</application>
 </manifest>

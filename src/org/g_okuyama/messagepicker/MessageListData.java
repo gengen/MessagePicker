@@ -1,11 +1,20 @@
 package org.g_okuyama.messagepicker;
 
 public class MessageListData {
+	private int mDBID;
     private String mName = null;
     private String mContents = null;
     private String mDate = null;
 
-    public void setName(String name){
+	public void setDBID(int id){
+		mDBID = id;
+	}
+	
+	public int getDBID(){
+		return mDBID;
+	}
+	
+	public void setName(String name){
         mName = name;
     }
 

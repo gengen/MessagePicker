@@ -8,9 +8,15 @@
 本サービスは、LINEの通知情報を記録します。\n\n
 警告に表示されるようなテキストの収集などは一切行っておりませんので、ご安心ください。
 </string>
-<string name="tab1">日付別</string>
-<string name="tab2">名前別</string>
+<string name="tab1">新着順</string>
+<string name="tab2">友だち別</string>
 <string name="error_msg">通知を取得できませんでした。</string>
 <string name="refresh">更新</string>
+<string name="list_alert_select">Select</string>
 
+<string name="cancel_confirm_title">Confirm</string>
+<string name="list_alert_confirm">Delete?</string>
+<string name="ok">Yes</string>         
+<string name="ng">Cancel</string>
+	
 </resources>

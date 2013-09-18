@@ -1,6 +1,8 @@
 package org.g_okuyama.messagepicker;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -9,11 +11,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.Button;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.text.SimpleDateFormat;
@@ -69,6 +71,8 @@ public class DateFragment extends Fragment {
 
             for(int i = 0; i < rowcount; i++){
                 MessageListData logitem = new MessageListData();
+                int dbid = c.getInt(0);
+                logitem.setDBID(dbid);
                 logitem.setName(c.getString(1));
                 logitem.setContents(c.getString(2));
                 //日時は変換してから格納
@@ -93,6 +97,7 @@ public class DateFragment extends Fragment {
         listview.setAdapter(adapter);
         //表示を一番最後のメッセージにする
         listview.setSelection(rowcount-1);
+        listview.setOnItemLongClickListener(new LongClickAdapter());
         
         setListener();
     }
@@ -201,5 +206,60 @@ public class DateFragment extends Fragment {
 	        c.close();
 	        db.close();
 	    }	    
+    }
+    
+    private class LongClickAdapter implements OnItemLongClickListener{
+    	int position = -1;
+    	
+		public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
+			position = pos;
+
+			new AlertDialog.Builder(getActivity())
+				.setTitle(R.string.list_alert_select)
+				.setItems(R.array.list_alert_array, new DialogInterface.OnClickListener() {
+				
+					public void onClick(DialogInterface dialog, int item) {
+						switch(item){
+						case 0://削除
+							delete(position);
+							break;
+						case 1://キャンセル
+							break;
+						}
+					}
+				}).show();				
+			
+			return true;
+		}
+    }
+    
+    private void delete(int position){
+    	final int pos = position;
+        	
+    	new AlertDialog.Builder(getActivity())
+        	.setTitle(R.string.cancel_confirm_title)
+        	.setMessage(getString(R.string.list_alert_confirm))
+        	.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+    			public void onClick(DialogInterface dialog, int which) {
+    				//ログ削除
+    				removeData(pos);
+    				refreshMessage();
+    			}
+    		})
+    		.setNegativeButton(R.string.ng, new DialogInterface.OnClickListener() {
+    			public void onClick(DialogInterface dialog, int which) {
+    				//何もしない
+    			}
+    		})
+    		.show();    
+    }
+    
+    private void removeData(int position){
+    	SQLiteDatabase db = mHelper.getWritableDatabase();
+
+    	MessageListData logitem = mMessageList.get(position);
+    	int id = logitem.getDBID();
+
+    	db.delete("logtable", "rowid = ?", new String[]{Integer.toString(id)});
     }
 }
