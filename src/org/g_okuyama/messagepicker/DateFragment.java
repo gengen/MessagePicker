@@ -3,7 +3,6 @@ package org.g_okuyama.messagepicker;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
@@ -23,9 +22,9 @@ import java.util.ArrayList;
 public class DateFragment extends Fragment {
     public static final String TAG = "MessagePicker";
     //初めに読み込むメッセージ数
-    public static final int FIRST_MESSAGE_NUM = 10;
+    public static final int FIRST_MESSAGE_NUM = 5;
     //追加で読み込まれるメッセージ数
-    public static final int ADD_MESSAGE_NUM = 5;
+    public static final int ADD_MESSAGE_NUM = 3;
     //今まで何回読み込まれたか
     public static int mTimes = 0;
     //メッセージ数
