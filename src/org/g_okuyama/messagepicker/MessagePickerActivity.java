@@ -1,8 +1,13 @@
 package org.g_okuyama.messagepicker;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -16,6 +21,9 @@ public class MessagePickerActivity extends ActionBarActivity{
 	public static final String TAG = "MessagePicker";
     public static final String PREF_KEY = "pref";
     public static final String AVAILABLE_KEY = "available";
+    
+    ProgressDialog mProgressDialog = null;
+    Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,15 @@ public class MessagePickerActivity extends ActionBarActivity{
         if(!(pref.getBoolean(AVAILABLE_KEY, false))){
             startActivity(new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS));
         }
+
+        initProgressDialog();
+    }
+    
+    void initProgressDialog(){
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage(getString(R.string.dialog_progress_refresh));
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCancelable(false);
     }
 
     @Override
@@ -54,36 +71,144 @@ public class MessagePickerActivity extends ActionBarActivity{
     	// Handle presses on the action bar items
     	switch (item.getItemId()) {
     	case R.id.action_refresh:
-    		ActionBar bar = getSupportActionBar();
-    		int id = bar.getSelectedNavigationIndex();
-    		
-    		if(id == 0){
-        		Fragment fragment = this.getSupportFragmentManager().findFragmentByTag("tab1");
-        		if(fragment instanceof DateFragment){
-        			((DateFragment)fragment).refreshMessage();
-        		}    			
-    		}
-    		else if(id == 1){
-        		Fragment fragment = this.getSupportFragmentManager().findFragmentByTag("tab2");
-        		if(fragment instanceof CategoryFragment){
-        			//TODO:処理の追加
-        			//((CategoryFragment)fragment).refreshMessage();
-        			Log.d("hoge", "hoge");
-        		}    			
-    		}
-    		else{
-    			//nothing to do
-    		}
-
+    		/*
+        	mHandler.post(new Runnable(){
+    			@Override
+    			public void run() {
+    		    	mProgressDialog.show();
+    			}
+        	});
+        	*/
+    		refresh();
     		return true;
     		
-    	case R.id.action_settings:
-    		//TODO:処理の追加　設定でなくてリストクリアにするか？
+    	case R.id.action_deleteAll:
+    		deleteAll();
     		return true;
     		
     	default:
     		return super.onOptionsItemSelected(item);
     	}
+    }
+    
+    void refresh(){
+    	//プログレスダイアログ表示
+    	mProgressDialog.show();
+
+		ActionBar bar = getSupportActionBar();
+		int id = bar.getSelectedNavigationIndex();
+		
+		if(id == 0){
+    		Fragment fragment = this.getSupportFragmentManager().findFragmentByTag("tab1");
+    		if(fragment instanceof DateFragment){
+    			((DateFragment)fragment).refreshMessage(false);
+    		}    			
+		}
+		else if(id == 1){
+    		Fragment fragment = this.getSupportFragmentManager().findFragmentByTag("tab2");
+    		if(fragment instanceof CategoryFragment){
+    			//TODO:処理の追加
+    			//((CategoryFragment)fragment).refreshMessage(false);
+    			Log.d("hoge", "hoge");
+    		}
+		}
+		else{
+			//nothing to do
+		}
+		
+		//プログレスダイアログ表示のためのウェイト用スレッド
+        Thread thread = new Thread(runnable);
+        thread.start();
+    }
+    
+    Runnable runnable = new Runnable() {
+        public void run() {
+        	try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+        	
+        	handler.sendMessage(new Message());
+        }
+    };
+    
+    private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            mProgressDialog.dismiss();
+        };
+    };
+
+
+    void deleteAll(){
+    	//メッセージが0個の場合は何もしない
+		Fragment fragment = this.getSupportFragmentManager().findFragmentByTag("tab1");
+		if(fragment instanceof DateFragment){
+			int num = ((DateFragment)fragment).getMessageNum();
+			if(num == 0){
+				return;
+			}
+		}
+		
+    	new AlertDialog.Builder(this)
+    	.setTitle(R.string.dialog_confirm_title)
+    	.setMessage(getString(R.string.dialog_delete_all_confirm))
+    	.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				removeDB();
+			}
+		})
+		.setNegativeButton(R.string.ng, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				//何もしない
+			}
+		})
+		.show();
+    }
+    
+    private void removeDB(){
+		ActionBar bar = getSupportActionBar();
+		int id = bar.getSelectedNavigationIndex();
+		
+		if(id == 0){
+    		Fragment fragment = this.getSupportFragmentManager().findFragmentByTag("tab1");
+    		if(fragment instanceof DateFragment){
+    			((DateFragment)fragment).removeAll();
+    			((DateFragment)fragment).clearView();
+    		}
+		}
+		else if(id == 1){
+    		Fragment fragment = this.getSupportFragmentManager().findFragmentByTag("tab2");
+    		if(fragment instanceof CategoryFragment){
+    			//TODO:処理の追加
+    			//((CategoryFragment)fragment).removeAll();
+    			//((CategoryFragment)fragment).clearView();
+    			Log.d("hoge", "hoge");
+    		}    			
+		}
+    }
+    
+    @Override
+    protected void onPause(){
+    	super.onPause();
+    	
+    	//リソースクリア
+    	//release();
+    }
+    
+    void release(){
+		Fragment tab1 = this.getSupportFragmentManager().findFragmentByTag("tab1");
+		if(tab1 instanceof DateFragment){
+			((DateFragment)tab1).clearView();
+		}
+		
+		Fragment tab2 = this.getSupportFragmentManager().findFragmentByTag("tab2");
+		if(tab2 instanceof CategoryFragment){
+			//TODO:処理の追加
+			//((CategoryFragment)tab2).clearView();
+		}
     }
 
 	//デベロッパーページのサンプルのままだとタブ切り替え時に表示が重なる現象が発生したため、いくつか修正

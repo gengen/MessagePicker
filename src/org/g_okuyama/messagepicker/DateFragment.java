@@ -132,17 +132,16 @@ public class DateFragment extends Fragment {
     }
     
     //メッセージの更新
-    void refreshMessage(){
+    public void refreshMessage(boolean forceFlag){
 		int num = getMessageNum();
-		//TODO:リリース時ははずす
-		//if(num >= mMsgNum){
-        clearView();
-        setMessageList();
-		mMsgNum = num;
-		//}
+		if((num >= mMsgNum) || forceFlag){
+			clearView();
+			setMessageList();
+			mMsgNum = num;
+		}
     }
     
-    void clearView(){
+    public void clearView(){
     	//adapterをクリア
         OverScrollListView listview = (OverScrollListView)mView.findViewById(R.id.message_list_date);
         MessageArrayAdapter adapter = (MessageArrayAdapter)listview.getAdapter();
@@ -150,6 +149,7 @@ public class DateFragment extends Fragment {
         mMessageList = null;
         mCurrentPos = -1;
         mTimes = 0;
+        mMsgNum = 0;
     }
     
     public static class OverScrollListView extends ListView {
@@ -237,13 +237,13 @@ public class DateFragment extends Fragment {
     	final int pos = position;
         	
     	new AlertDialog.Builder(getActivity())
-        	.setTitle(R.string.cancel_confirm_title)
-        	.setMessage(getString(R.string.list_alert_confirm))
+        	.setTitle(R.string.dialog_confirm_title)
+        	.setMessage(getString(R.string.dialog_delete_confirm))
         	.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
     			public void onClick(DialogInterface dialog, int which) {
     				//ログ削除
     				removeData(pos);
-    				refreshMessage();
+    				refreshMessage(true);
     			}
     		})
     		.setNegativeButton(R.string.ng, new DialogInterface.OnClickListener() {
@@ -261,5 +261,12 @@ public class DateFragment extends Fragment {
     	int id = logitem.getDBID();
 
     	db.delete("logtable", "rowid = ?", new String[]{Integer.toString(id)});
+    	db.close();
+    }
+    
+    void removeAll(){
+    	SQLiteDatabase db = mHelper.getWritableDatabase();
+    	db.delete("logtable", null, null);
+    	db.close();
     }
 }

@@ -3,16 +3,15 @@
     xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
 
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        yourapp:showAsAction="ifRoom"
-        android:title="@string/action_settings"
-        android:icon="@drawable/ic_menu_preferences"/>
-
-    <item
         android:id="@+id/action_refresh"
         yourapp:showAsAction="ifRoom"
         android:title="@string/action_refresh"
         android:icon="@drawable/ic_menu_refresh"/>
+
+    <item
+        android:id="@+id/action_deleteAll"
+        android:orderInCategory="100"
+        yourapp:showAsAction="never"
+        android:title="@string/action_deleteall"/>
 
 </menu>
