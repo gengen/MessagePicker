@@ -46,7 +46,7 @@ public class MessageArrayAdapter extends ArrayAdapter<MessageListData> {
         } else {
              linearLayout.setBackgroundColor(mContext.getResources().getColor(R.color.listSecond));
         }
-        mLoopCount++; 
+        mLoopCount++;
 
         return convertView;
     }

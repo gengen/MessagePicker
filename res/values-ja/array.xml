@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<resources>  
+    <string-array name="list_alert_array">
+	    <item>削除</item>
+	    <item>キャンセル</item>
+	</string-array>
+</resources>

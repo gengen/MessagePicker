@@ -24,6 +24,7 @@ public class MessagePickerActivity extends ActionBarActivity{
     
     ProgressDialog mProgressDialog = null;
     Handler mHandler = new Handler();
+    //boolean mLaunchFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,16 @@ public class MessagePickerActivity extends ActionBarActivity{
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mProgressDialog.setCancelable(false);
     }
+    
+    /*
+    protected void onResume(){
+        super.onResume();
+        
+        if(mLaunchFlag){
+        	
+        }
+    }
+    */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -71,14 +82,6 @@ public class MessagePickerActivity extends ActionBarActivity{
     	// Handle presses on the action bar items
     	switch (item.getItemId()) {
     	case R.id.action_refresh:
-    		/*
-        	mHandler.post(new Runnable(){
-    			@Override
-    			public void run() {
-    		    	mProgressDialog.show();
-    			}
-        	});
-        	*/
     		refresh();
     		return true;
     		
@@ -107,9 +110,7 @@ public class MessagePickerActivity extends ActionBarActivity{
 		else if(id == 1){
     		Fragment fragment = this.getSupportFragmentManager().findFragmentByTag("tab2");
     		if(fragment instanceof CategoryFragment){
-    			//TODO:èàóùÇÃí«â¡
-    			//((CategoryFragment)fragment).refreshMessage(false);
-    			Log.d("hoge", "hoge");
+    			((CategoryFragment)fragment).refreshMessage(false);
     		}
 		}
 		else{
@@ -182,10 +183,8 @@ public class MessagePickerActivity extends ActionBarActivity{
 		else if(id == 1){
     		Fragment fragment = this.getSupportFragmentManager().findFragmentByTag("tab2");
     		if(fragment instanceof CategoryFragment){
-    			//TODO:èàóùÇÃí«â¡
-    			//((CategoryFragment)fragment).removeAll();
-    			//((CategoryFragment)fragment).clearView();
-    			Log.d("hoge", "hoge");
+    			((CategoryFragment)fragment).removeAll();
+    			((CategoryFragment)fragment).clearView();
     		}    			
 		}
     }
@@ -206,8 +205,7 @@ public class MessagePickerActivity extends ActionBarActivity{
 		
 		Fragment tab2 = this.getSupportFragmentManager().findFragmentByTag("tab2");
 		if(tab2 instanceof CategoryFragment){
-			//TODO:èàóùÇÃí«â¡
-			//((CategoryFragment)tab2).clearView();
+			((CategoryFragment)tab2).clearView();
 		}
     }
 

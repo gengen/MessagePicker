@@ -5,13 +5,12 @@
 <string name="action_deleteall">Delete All</string>
 <string name="action_refresh">Refresh</string>
 <string name="description">
-本サービスは、LINEの通知情報を記録します。\n\n
-警告に表示されるようなテキストの収集などは一切行っておりませんので、ご安心ください。
+This service records notification of LINE application.
 </string>
-<string name="tab1">新着順</string>
-<string name="tab2">友だち別</string>
-<string name="error_msg">通知を取得できませんでした。</string>
-<string name="refresh">更新</string>
+<string name="tab1">New</string>
+<string name="tab2">Friends</string>
+<string name="error_msg">Couldn\'t　get messages.</string>
+<string name="refresh">Refresh</string>
 <string name="dialog_progress_refresh">refreshing</string>
 <string name="list_alert_select">Select</string>
 

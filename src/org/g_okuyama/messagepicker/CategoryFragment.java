@@ -55,5 +55,17 @@ public class CategoryFragment extends Fragment {
         ListView listview = (ListView)v.findViewById(R.id.message_list_category);
         listview.setAdapter(adapter);
     }
+    
+    public void refreshMessage(boolean forceFlag){
+		//TODO:ŽÀ‘•
+    }
+    
+    public void clearView(){
+		//TODO:ŽÀ‘•    	
+    }
+    
+    void removeAll(){
+		//TODO:ŽÀ‘•
+    }
 }
 

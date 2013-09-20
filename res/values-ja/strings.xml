@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string name="app_name">既読回避せよ！</string>
+<string name="action_deleteall">全削除</string>
+<string name="action_refresh">更新</string>
+<string name="description">
+本サービスは、LINEの通知情報を記録します。\n\n
+警告に表示されるようなテキストの収集などは一切行っておりませんので、ご安心ください。
+</string>
+<string name="tab1">新着順</string>
+<string name="tab2">友だち別</string>
+<string name="error_msg">通知を取得できませんでした。</string>
+<string name="refresh">更新</string>
+<string name="dialog_progress_refresh">更新中</string>
+<string name="list_alert_select">選択</string>
+
+<string name="dialog_confirm_title">確認</string>
+<string name="dialog_delete_confirm">削除しますか？</string>
+<string name="dialog_delete_all_confirm">
+全削除しますか？\n
+※削除後は元に戻せません。
+</string>
+<string name="ok">OK</string>         
+<string name="ng">キャンセル</string>
+	
+</resources>

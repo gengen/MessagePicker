@@ -80,7 +80,7 @@ public class DateFragment extends Fragment {
                 long time = Long.parseLong(timeStr);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
                 String date = sdf.format(time);
-                Log.d(TAG, "date = " + date);
+                //Log.d(TAG, "date = " + date);
                 //TODO:Œ»Ý‚ÌŽž‚©‚ç‚Ì·•ª‚É•ÏŠ·
                 logitem.setDate(date);
 
@@ -152,6 +152,12 @@ public class DateFragment extends Fragment {
         mMsgNum = 0;
     }
     
+    @Override
+    public void onPause() {
+        super.onPause();
+        clearView();
+    }
+    
     public static class OverScrollListView extends ListView {
     	Context mContext;
 
@@ -167,17 +173,17 @@ public class DateFragment extends Fragment {
 			if(mFlag == false && mCurrentPos == 0){
 				if(mMsgNum > (FIRST_MESSAGE_NUM + (ADD_MESSAGE_NUM * mTimes))){
 					mFlag = true;
-					addList();
+					addMessageList();
 					mTimes++;
 				}
 			}
 		}
 
-	    void addList(){
+	    void addMessageList(){
 	    	DatabaseHelper helper = new DatabaseHelper(mContext);
 	        SQLiteDatabase db = helper.getWritableDatabase();
 	        int offset = FIRST_MESSAGE_NUM + (ADD_MESSAGE_NUM * mTimes);
-	        Log.d(TAG, "offset = " + offset);
+	        //Log.d(TAG, "offset = " + offset);
 	        String query = "select * from logtable order by time desc limit " + ADD_MESSAGE_NUM + " offset " + offset;
 	        Cursor c = db.rawQuery(query, null);
 	        int rowcount = c.getCount();
@@ -187,6 +193,8 @@ public class DateFragment extends Fragment {
 
 	            for(int i = 0; i < rowcount; i++){
 	                MessageListData logitem = new MessageListData();
+	                int dbid = c.getInt(0);
+	                logitem.setDBID(dbid);
 	                logitem.setName(c.getString(1));
 	                logitem.setContents(c.getString(2));
 	                //“úŽž‚Í•ÏŠ·‚µ‚Ä‚©‚çŠi”[
@@ -256,8 +264,12 @@ public class DateFragment extends Fragment {
     
     private void removeData(int position){
     	SQLiteDatabase db = mHelper.getWritableDatabase();
-
-    	MessageListData logitem = mMessageList.get(position);
+        
+    	//MessageListData logitem = mMessageList.get(position);
+        OverScrollListView listview = (OverScrollListView)mView.findViewById(R.id.message_list_date);
+        MessageArrayAdapter adapter = (MessageArrayAdapter)listview.getAdapter();
+        MessageListData logitem = adapter.getItem(position);
+        
     	int id = logitem.getDBID();
 
     	db.delete("logtable", "rowid = ?", new String[]{Integer.toString(id)});
