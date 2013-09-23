@@ -1,40 +1,46 @@
 package org.g_okuyama.messagepicker;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemLongClickListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class CategoryFragment extends Fragment {
+	public static final int REQUEST_CODE = 1;
+	
     DatabaseHelper mHelper = null;
     ArrayList<MessageListData> mNameList = null;
+    
+    View mView;
+    //メッセージ数
+    public static int mMsgNum = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.category_fragment, container, false);
+    	mView = inflater.inflate(R.layout.category_fragment, container, false);
 
-        setMessageList(v);
+        setMessageList();
 
-        return v;
+        return mView;
     }
 
-    void setMessageList(View v){
+    void setMessageList(){
         if(mHelper == null){
             mHelper = new DatabaseHelper(getActivity());
         }
+        
+        //現在のメッセージの総数を取得
+        mMsgNum = getMessageNum();
         
         mNameList = new ArrayList<MessageListData>();
 
@@ -77,12 +83,10 @@ public class CategoryFragment extends Fragment {
         db.close();
         
         MessageArrayAdapter adapter = new MessageArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, mNameList);
-        ListView listview = (ListView)v.findViewById(R.id.message_list_category);
+        ListView listview = (ListView)mView.findViewById(R.id.message_list_category);
 
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(new ClickAdapter());
-
-        //listview.setOnItemLongClickListener(new LongClickAdapter());
     }
     
     public int getMessageNum(){
@@ -97,47 +101,40 @@ public class CategoryFragment extends Fragment {
     }
     
     public void refreshMessage(boolean forceFlag){
-		//TODO:実装
+		int num = getMessageNum();
+		if((num >= mMsgNum) || forceFlag){
+			clearView();
+			setMessageList();
+			mMsgNum = num;
+		}
     }
     
     public void clearView(){
-		//TODO:実装    	
+    	//adapterをクリア
+        ListView listview = (ListView)mView.findViewById(R.id.message_list_category);
+        MessageArrayAdapter adapter = (MessageArrayAdapter)listview.getAdapter();
+        adapter.clear();
+        mNameList = null;
+        //mCurrentPos = -1;
+        //mTimes = 0;
+        mMsgNum = 0;
     }
     
     void removeAll(){
-		//TODO:実装
+    	SQLiteDatabase db = mHelper.getWritableDatabase();
+    	db.delete("logtable", null, null);
+    	db.close();
     }
     
     private class ClickAdapter implements OnItemClickListener{
 		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-			
-		}
-    	
-    }
-    
-    private class LongClickAdapter implements OnItemLongClickListener{
-    	int position = -1;
-    	
-		public boolean onItemLongClick(AdapterView<?> adapter, View view, int pos, long id) {
-			position = pos;
-
-			new AlertDialog.Builder(getActivity())
-				.setTitle(R.string.list_alert_select)
-				.setItems(R.array.list_alert_array, new DialogInterface.OnClickListener() {
-				
-					public void onClick(DialogInterface dialog, int item) {
-						switch(item){
-						case 0://削除
-							//delete(position);
-							break;
-						case 1://キャンセル
-							break;
-						}
-					}
-				}).show();				
-			
-			return true;
+		public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+			//リスト詳細を表示するアクティビティを起動
+        	Intent intent = new Intent(getActivity(), EachMessageListActivity.class);
+        	MessageListData item = mNameList.get(pos);
+        	String name = item.getName();
+        	intent.putExtra("name", name);
+        	startActivityForResult(intent, REQUEST_CODE);
 		}
     }
 }

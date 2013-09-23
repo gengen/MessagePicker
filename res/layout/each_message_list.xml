@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<view class="org.g_okuyama.messagepicker.EachMessageListActivity$OverScrollListView" xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/each_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+</view>
