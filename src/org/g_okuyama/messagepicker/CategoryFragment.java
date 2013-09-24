@@ -68,9 +68,8 @@ public class CategoryFragment extends Fragment {
                 //“ú‚Í•ÏŠ·‚µ‚Ä‚©‚çŠi”[
                 String timeStr = c.getString(3);
                 long time = Long.parseLong(timeStr);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd");
                 String date = sdf.format(time);
-                //Log.d(TAG, "date = " + date);
                 //TODO:Œ»İ‚Ì‚©‚ç‚Ì·•ª‚É•ÏŠ·
                 logitem.setDate(date);
 
@@ -82,7 +81,7 @@ public class CategoryFragment extends Fragment {
         c.close();
         db.close();
         
-        MessageArrayAdapter adapter = new MessageArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, mNameList);
+        CategoryArrayAdapter adapter = new CategoryArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, mNameList);
         ListView listview = (ListView)mView.findViewById(R.id.message_list_category);
 
         listview.setAdapter(adapter);
@@ -112,7 +111,7 @@ public class CategoryFragment extends Fragment {
     public void clearView(){
     	//adapter‚ğƒNƒŠƒA
         ListView listview = (ListView)mView.findViewById(R.id.message_list_category);
-        MessageArrayAdapter adapter = (MessageArrayAdapter)listview.getAdapter();
+        CategoryArrayAdapter adapter = (CategoryArrayAdapter)listview.getAdapter();
         adapter.clear();
         mNameList = null;
         //mCurrentPos = -1;

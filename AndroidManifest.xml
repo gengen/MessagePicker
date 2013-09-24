@@ -32,7 +32,8 @@
 	            </intent-filter>
 	        </activity>
 	        <activity 
-	            android:name="org.g_okuyama.messagepicker.EachMessageListActivity">
+	            android:name="org.g_okuyama.messagepicker.EachMessageListActivity"
+	            android:theme="@style/Theme.AppCompat.Light">
 	        </activity>
     </application>
 </manifest>

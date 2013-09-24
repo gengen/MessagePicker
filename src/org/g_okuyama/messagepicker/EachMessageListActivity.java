@@ -3,15 +3,20 @@ package org.g_okuyama.messagepicker;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.app.ActionBarActivity;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -19,7 +24,7 @@ import android.widget.ListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
-public class EachMessageListActivity extends Activity {
+public class EachMessageListActivity extends ActionBarActivity {
     public static final String TAG = "MessagePicker";
 
     //初めに読み込むメッセージ数
@@ -32,12 +37,14 @@ public class EachMessageListActivity extends Activity {
     public static int mMsgNum = 0;
     //現在の表示位置
     public static int mCurrentPos = -1;
+    static String mName;
     static boolean mFlag = false;
 
     DatabaseHelper mHelper = null;
     ArrayList<MessageListData> mEachList = null;
     
-    static String mName;
+    ProgressDialog mProgressDialog = null;
+    Handler mHandler = new Handler();
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +57,14 @@ public class EachMessageListActivity extends Activity {
         Log.d(TAG, "name = " + mName);
         
         setEachList();
+        initProgressDialog();
+    }
+    
+    void initProgressDialog(){
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage(getString(R.string.dialog_progress_refresh));
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCancelable(false);
     }
     
     void setEachList(){
@@ -215,6 +230,95 @@ public class EachMessageListActivity extends Activity {
     public void onPause() {
         super.onPause();
         clearView();
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	// Handle presses on the action bar items
+    	switch (item.getItemId()) {
+    	case R.id.action_refresh:
+    		refresh();
+    		return true;
+    		
+    	case R.id.action_deleteAll:
+    		deleteCategory();
+    		return true;
+    		
+    	default:
+    		return super.onOptionsItemSelected(item);
+    	}
+    }
+    
+    void refresh(){
+    	//プログレスダイアログ表示
+    	mProgressDialog.show();
+    	
+    	refreshMessage(false);
+    	
+		//プログレスダイアログ表示のためのウェイト用スレッド
+        Thread thread = new Thread(runnable);
+        thread.start();
+    }
+    
+    Runnable runnable = new Runnable() {
+        public void run() {
+        	try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+        	
+        	handler.sendMessage(new Message());
+        }
+    };
+    
+    private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            mProgressDialog.dismiss();
+        };
+    };
+    
+    void deleteCategory(){
+    	int num = getMessageNum();
+    	if(num == 0){
+    		return;
+    	}
+    	
+    	//TODO:カテゴリ削除用に文言変更
+    	new AlertDialog.Builder(this)
+    	.setTitle(R.string.dialog_confirm_title)
+    	.setMessage(getString(R.string.dialog_delete_all_confirm))
+    	.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				removeCategoryDB();
+			}
+		})
+		.setNegativeButton(R.string.ng, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				//何もしない
+			}
+		})
+		.show();
+    }
+    
+    void removeCategoryDB(){
+    	/*
+    	SQLiteDatabase db = mHelper.getWritableDatabase();
+    	db.delete("logtable", null, null);
+    	db.close();
+    	*/
+    	clearView();
+    	
+    	//TODO:削除フラグを付与して画面を1つ戻る
     }
     
     public static class OverScrollListView extends ListView {

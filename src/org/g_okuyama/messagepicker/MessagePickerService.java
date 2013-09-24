@@ -91,10 +91,14 @@ public class MessagePickerService extends AccessibilityService {
                     //String info = text.get(16909082);
                     //contentsがnullのときは、イベントからテキストを取得
                     if(contents == null){
-                    	contents = event.getText().toString();
+                    	contents = text.get(16909082);
                     	if(contents == null){
-                    		//テキストもnullの場合はエラーメッセージを設定
-                    		contents = getString(R.string.error_msg);
+                    		contents = event.getText().toString();
+                    		if(contents == null){
+                    			//テキストもnullの場合はエラーメッセージを設定
+                    			contents = getString(R.string.error_msg);
+                    			//TODO:スタンプのときなどはどうなるか、検証必要
+                    		}
                     	}
                     }
                     else{
