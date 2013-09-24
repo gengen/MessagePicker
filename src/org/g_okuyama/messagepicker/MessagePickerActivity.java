@@ -1,5 +1,8 @@
 package org.g_okuyama.messagepicker;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -207,6 +210,37 @@ public class MessagePickerActivity extends ActionBarActivity{
 		if(tab2 instanceof CategoryFragment){
 			((CategoryFragment)tab2).clearView();
 		}
+    }
+    
+    public static String getDateAllString(long time){
+        SimpleDateFormat sdf;
+        if(Locale.JAPAN.equals(Locale.getDefault())) {
+            sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");	                	
+        }
+        else{
+        	sdf = new SimpleDateFormat("MMM d, yyyy, HH:mm");
+        }
+
+        return sdf.format(time);
+    }
+    
+    public static String getDateString(long time){
+        SimpleDateFormat sdf;
+        if(Locale.JAPAN.equals(Locale.getDefault())) {
+        	sdf = new SimpleDateFormat("MM/dd");	                	
+        }
+        else{
+        	sdf = new SimpleDateFormat("MMM d");
+        }
+
+        return sdf.format(time);
+    }
+
+    public static String getTimeString(long time){
+        SimpleDateFormat sdf;
+        sdf = new SimpleDateFormat("HH:mm");	                	
+
+        return sdf.format(time);
     }
 
 	//デベロッパーページのサンプルのままだとタブ切り替え時に表示が重なる現象が発生したため、いくつか修正

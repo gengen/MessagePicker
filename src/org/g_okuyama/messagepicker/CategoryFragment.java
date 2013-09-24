@@ -14,6 +14,7 @@ import android.widget.ListView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class CategoryFragment extends Fragment {
 	public static final int REQUEST_CODE = 1;
@@ -68,9 +69,15 @@ public class CategoryFragment extends Fragment {
                 //日時は変換してから格納
                 String timeStr = c.getString(3);
                 long time = Long.parseLong(timeStr);
-                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd");
-                String date = sdf.format(time);
-                //TODO:現在の時刻からの差分に変換
+                String date = MessagePickerActivity.getDateString(time);
+
+                //今日の日付と比較
+                long current = System.currentTimeMillis();
+                String today = MessagePickerActivity.getDateString(current);
+                if(date.equals(today)){
+                	date = MessagePickerActivity.getTimeString(time);
+                }
+                
                 logitem.setDate(date);
 
                 mNameList.add(logitem);
@@ -135,6 +142,15 @@ public class CategoryFragment extends Fragment {
         	intent.putExtra("name", name);
         	startActivityForResult(intent, REQUEST_CODE);
 		}
+    }
+    
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+    	if(requestCode == REQUEST_CODE){
+    		if(resultCode == EachMessageListActivity.RESPONSE_DELETE){
+    			//カテゴリが削除されたため、表示をクリアする
+    			refreshMessage(true);
+    		}
+    	}
     }
 }
 

@@ -18,7 +18,6 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class DateFragment extends Fragment {
@@ -78,10 +77,20 @@ public class DateFragment extends Fragment {
                 //“ú‚Í•ÏŠ·‚µ‚Ä‚©‚çŠi”[
                 String timeStr = c.getString(3);
                 long time = Long.parseLong(timeStr);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-                String date = sdf.format(time);
+                String date = MessagePickerActivity.getDateString(time);
                 //Log.d(TAG, "date = " + date);
-                //TODO:Œ»İ‚Ì‚©‚ç‚Ì·•ª‚É•ÏŠ·
+
+                //¡“ú‚Ì“ú•t‚Æ”äŠr
+                long current = System.currentTimeMillis();
+                String today = MessagePickerActivity.getDateString(current);
+                //¡“ú‚Å‚ ‚ê‚ÎŠÔ‚Ì‚İ•\¦
+                if(date.equals(today)){
+                	date = MessagePickerActivity.getTimeString(time);
+                }
+                else{
+                	date = MessagePickerActivity.getDateAllString(time);
+                }
+                
                 logitem.setDate(date);
 
                 mMessageList.add(logitem);
@@ -200,9 +209,19 @@ public class DateFragment extends Fragment {
 	                //“ú‚Í•ÏŠ·‚µ‚Ä‚©‚çŠi”[
 	                String timeStr = c.getString(3);
 	                long time = Long.parseLong(timeStr);
-	                SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-	                String date = sdf.format(time);
-	                //TODO:Œ»İ‚Ì‚©‚ç‚Ì·•ª‚É•ÏŠ·
+	                String date = MessagePickerActivity.getDateString(time);
+
+	                //¡“ú‚Ì“ú•t‚Æ”äŠr
+	                long current = System.currentTimeMillis();
+	                String today = MessagePickerActivity.getDateString(current);
+	                //¡“ú‚Å‚ ‚ê‚ÎŠÔ‚Ì‚İ•\¦
+	                if(date.equals(today)){
+	                	date = MessagePickerActivity.getTimeString(time);
+	                }
+	                else{
+	                	date = MessagePickerActivity.getDateAllString(time);
+	                }
+	                
 	                logitem.setDate(date);
 
 	    			MessageArrayAdapter adapter = (MessageArrayAdapter)getAdapter();

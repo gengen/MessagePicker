@@ -19,5 +19,5 @@ This service records notification of LINE application.
 <string name="dialog_delete_all_confirm">Delete All?</string>
 <string name="ok">Yes</string>         
 <string name="ng">Cancel</string>
-	
+
 </resources>

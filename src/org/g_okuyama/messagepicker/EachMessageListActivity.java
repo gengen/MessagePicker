@@ -1,12 +1,12 @@
 package org.g_okuyama.messagepicker;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -26,6 +26,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 
 public class EachMessageListActivity extends ActionBarActivity {
     public static final String TAG = "MessagePicker";
+    public static final int RESPONSE_DELETE = 1;
 
     //初めに読み込むメッセージ数
     public static final int FIRST_MESSAGE_NUM = 5;
@@ -98,10 +99,19 @@ public class EachMessageListActivity extends ActionBarActivity {
                 //日時は変換してから格納
                 String timeStr = c.getString(3);
                 long time = Long.parseLong(timeStr);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-                String date = sdf.format(time);
-                //Log.d(TAG, "date = " + date);
-                //TODO:現在の時刻からの差分に変換
+                String date = MessagePickerActivity.getDateString(time);
+
+                //今日の日付と比較
+                long current = System.currentTimeMillis();
+                String today = MessagePickerActivity.getDateString(current);
+                //今日であれば時間のみ表示
+                if(date.equals(today)){
+                	date = MessagePickerActivity.getTimeString(time);
+                }
+                else{
+                	date = MessagePickerActivity.getDateAllString(time);
+                }
+                
                 logitem.setDate(date);
 
                 mEachList.add(logitem);
@@ -318,7 +328,10 @@ public class EachMessageListActivity extends ActionBarActivity {
     	*/
     	clearView();
     	
-    	//TODO:削除フラグを付与して画面を1つ戻る
+    	//前画面のActivityに戻る
+        Intent intent = new Intent();
+        setResult(RESPONSE_DELETE, intent);
+    	finish();
     }
     
     public static class OverScrollListView extends ListView {
@@ -365,9 +378,20 @@ public class EachMessageListActivity extends ActionBarActivity {
 	                //日時は変換してから格納
 	                String timeStr = c.getString(3);
 	                long time = Long.parseLong(timeStr);
-	                SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-	                String date = sdf.format(time);
-	                //TODO:現在の時刻からの差分に変換
+	                String date = MessagePickerActivity.getDateString(time);
+
+	                //今日の日付と比較
+	                long current = System.currentTimeMillis();
+	                String today = MessagePickerActivity.getDateString(current);
+	                //今日であれば時間のみ表示
+	                if(date.equals(today)){
+	                	date = MessagePickerActivity.getTimeString(time);
+	                }
+	                else{
+	                	date = MessagePickerActivity.getDateAllString(time);
+	                }
+	                
+	                
 	                logitem.setDate(date);
 
 	    			MessageArrayAdapter adapter = (MessageArrayAdapter)getAdapter();
