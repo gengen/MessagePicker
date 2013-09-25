@@ -57,6 +57,7 @@ public class EachMessageListActivity extends ActionBarActivity {
         mName = extras.getString("name");
         Log.d(TAG, "name = " + mName);
         
+        setTitle(mName);
         setEachList();
         initProgressDialog();
     }
@@ -122,7 +123,7 @@ public class EachMessageListActivity extends ActionBarActivity {
         c.close();
         db.close();
         
-        MessageArrayAdapter adapter = new MessageArrayAdapter(this, android.R.layout.simple_list_item_1, mEachList);
+        EachMessageArrayAdapter adapter = new EachMessageArrayAdapter(this, android.R.layout.simple_list_item_1, mEachList);
         OverScrollListView listview = (OverScrollListView)findViewById(R.id.each_list);
         listview.setAdapter(adapter);
         //表示を一番最後のメッセージにする
@@ -214,7 +215,7 @@ public class EachMessageListActivity extends ActionBarActivity {
     public void clearView(){
     	//adapterをクリア
         OverScrollListView listview = (OverScrollListView)findViewById(R.id.each_list);
-        MessageArrayAdapter adapter = (MessageArrayAdapter)listview.getAdapter();
+        EachMessageArrayAdapter adapter = (EachMessageArrayAdapter)listview.getAdapter();
         adapter.clear();
         mEachList = null;
         mCurrentPos = -1;
@@ -227,13 +228,20 @@ public class EachMessageListActivity extends ActionBarActivity {
         
     	//MessageListData logitem = mMessageList.get(position);
         OverScrollListView listview = (OverScrollListView)findViewById(R.id.each_list);
-        MessageArrayAdapter adapter = (MessageArrayAdapter)listview.getAdapter();
+        EachMessageArrayAdapter adapter = (EachMessageArrayAdapter)listview.getAdapter();
         MessageListData logitem = adapter.getItem(position);
         
     	int id = logitem.getDBID();
 
     	db.delete("logtable", "rowid = ?", new String[]{Integer.toString(id)});
     	db.close();
+    	
+    	//メッセージが0のときは前の画面に戻る
+    	if(getMessageNum() == 0){
+            Intent intent = new Intent();
+            setResult(RESPONSE_DELETE, intent);
+        	finish();
+    	}
     }
     
     @Override
@@ -321,12 +329,11 @@ public class EachMessageListActivity extends ActionBarActivity {
     }
     
     void removeCategoryDB(){
-    	/*
     	SQLiteDatabase db = mHelper.getWritableDatabase();
-    	db.delete("logtable", null, null);
+    	db.delete("logtable", "name = ?", new String[]{mName});
     	db.close();
-    	*/
-    	clearView();
+
+    	//clearView();
     	
     	//前画面のActivityに戻る
         Intent intent = new Intent();
@@ -394,7 +401,7 @@ public class EachMessageListActivity extends ActionBarActivity {
 	                
 	                logitem.setDate(date);
 
-	    			MessageArrayAdapter adapter = (MessageArrayAdapter)getAdapter();
+	    			EachMessageArrayAdapter adapter = (EachMessageArrayAdapter)getAdapter();
 	                adapter.insert(logitem, 0);
 
 	                c.moveToNext();

@@ -8,13 +8,6 @@
         android:orientation="vertical">
 
     <TextView
-            android:id="@+id/item_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="6pt"
-            android:padding="2pt"/>
-
-    <TextView
             android:id="@+id/item_contents"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,6 +22,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:textSize="5pt"
-	        android:textColor="#808080"
+            android:textColor="#808080"
             android:paddingRight="2pt"/>
 </LinearLayout>

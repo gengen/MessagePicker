@@ -52,13 +52,13 @@ public class CategoryFragment extends Fragment {
         String prevName = "";
 
         if(rowcount != 0){
-            c.moveToFirst();
+            c.moveToLast();
 
             for(int i = 0; i < rowcount; i++){
                 MessageListData logitem = new MessageListData();
                 String name = c.getString(1);
                 if(name.equals(prevName)){
-                	c.moveToNext();
+                	c.moveToPrevious();
                 	continue;
                 }
                 logitem.setName(name);
@@ -82,7 +82,7 @@ public class CategoryFragment extends Fragment {
 
                 mNameList.add(logitem);
 
-                c.moveToNext();
+                c.moveToPrevious();
             }
         }
         c.close();

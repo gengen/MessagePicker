@@ -125,7 +125,6 @@ public class MessagePickerService extends AccessibilityService {
                     	name = str[0];
                     	contents = str[1];
                     }
-                    /*
                     else{
                     	str = null;
                     	str = contents.split(":");
@@ -135,7 +134,6 @@ public class MessagePickerService extends AccessibilityService {
                         	contents = str[1];
                         }
                     }
-                    */
                     
                     Log.d(TAG, "name = " + name);
                     Log.d(TAG, "contents = " + contents);
