@@ -84,8 +84,8 @@ public class EachMessageListActivity extends ActionBarActivity {
 
         int rowcount = c.getCount();
         
-        Log.d(TAG, "num = " + mMsgNum);
-        Log.d(TAG, "count = " + rowcount);
+        //Log.d(TAG, "num = " + mMsgNum);
+        //Log.d(TAG, "count = " + rowcount);
         
         if(rowcount != 0){
             c.moveToLast();
@@ -344,7 +344,7 @@ public class EachMessageListActivity extends ActionBarActivity {
 		
 		@Override
 		protected void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
-			Log.d(TAG, "OverScroll");
+			//Log.d(TAG, "OverScroll");
 			//一番上が表示されているときのみメッセージを追加する
 			if(mFlag == false && mCurrentPos == 0){
 				Log.d(TAG, "add");

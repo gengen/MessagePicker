@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityRecord;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MessagePickerService extends AccessibilityService {
@@ -36,9 +38,11 @@ public class MessagePickerService extends AccessibilityService {
 
         if(et == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED){
         	//TODO:リリース時ははずす
-            //if(!(checkPackage(event))){
-        	//return;
-            //}
+        	/*
+            if(!(checkPackage(event))){
+            	return;
+            }
+            */
 
             getNotification(event);
         }
@@ -66,7 +70,7 @@ public class MessagePickerService extends AccessibilityService {
                     outerFields[i].setAccessible(true);
                     ArrayList<Object> actions = (ArrayList<Object>)outerFields[i].get(rv);
                     for (Object action : actions) {
-                        Field innerFields[] = action.getClass().getDeclaredFields();
+                        Field innerFields[] = action.getClass().getDeclaredFields();                        
                         Object value = null;
                         Integer type = null;
                         Integer viewId = null;
@@ -80,6 +84,9 @@ public class MessagePickerService extends AccessibilityService {
                                 viewId = field.getInt(action);
                             }
                         }
+                        
+                        //TODO:リリース時ははずす
+                        Log.d(TAG, "viewId = " + viewId);
 
                         if (type == 9 || type == 10) {
                             text.put(viewId, value.toString());
@@ -88,10 +95,14 @@ public class MessagePickerService extends AccessibilityService {
 
                     String name = text.get(16908310);
                     String contents = text.get(16908358);
-                    //String info = text.get(16909082);
-                    //contentsがnullのときは、イベントからテキストを取得
+                    
+                    if(name == null){
+                    	name = getString(R.string.error_msg);
+                    }
+
                     if(contents == null){
-                    	contents = text.get(16909082);
+                    	//for XPERIA AX
+                    	contents = text.get(16908359);
                     	if(contents == null){
                     		contents = event.getText().toString();
                     		if(contents == null){
@@ -101,11 +112,33 @@ public class MessagePickerService extends AccessibilityService {
                     		}
                     	}
                     }
-                    else{
-                    }
+                    
                     //getEventTimeだと起動時からの時間しか取れないため使用しない
                     //long time = event.getEventTime();
                     long time = System.currentTimeMillis();
+                    
+                    //for LINE
+                    String[] str = contents.split("：");
+                    //この条件は後で消す
+                    Log.d(TAG, "length = " + str.length);
+                    if(str.length == 2){
+                    	name = str[0];
+                    	contents = str[1];
+                    }
+                    /*
+                    else{
+                    	str = null;
+                    	str = contents.split(":");
+                        Log.d(TAG, "length = " + str.length);
+                        if(str.length == 2){
+                        	name = str[0];
+                        	contents = str[1];
+                        }
+                    }
+                    */
+                    
+                    Log.d(TAG, "name = " + name);
+                    Log.d(TAG, "contents = " + contents);
                     
                     //DBに格納
                     ContentValues values = new ContentValues();
@@ -128,8 +161,8 @@ public class MessagePickerService extends AccessibilityService {
 
         Log.d(TAG, "cls = " + cls + "," + "pkg = " + pkg);
 
-        //テスト用にGmail。ここをLINEに変える
-        if(pkg.equalsIgnoreCase("com.google.android.gm")){
+        //LINEを判定
+        if(pkg.equalsIgnoreCase("jp.naver.line.android")){
             return true;
         }
 

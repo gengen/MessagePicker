@@ -177,7 +177,7 @@ public class DateFragment extends Fragment {
 		
 		@Override
 		protected void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
-			Log.d(TAG, "onOverScrolled");
+			//Log.d(TAG, "onOverScrolled");
 			//一番上が表示されているときのみメッセージを追加する
 			if(mFlag == false && mCurrentPos == 0){
 				if(mMsgNum > (FIRST_MESSAGE_NUM + (ADD_MESSAGE_NUM * mTimes))){
