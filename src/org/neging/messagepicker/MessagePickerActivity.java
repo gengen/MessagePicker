@@ -1,4 +1,4 @@
-package org.g_okuyama.messagepicker;
+package org.neging.messagepicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;

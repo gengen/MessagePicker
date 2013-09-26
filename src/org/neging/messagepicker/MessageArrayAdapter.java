@@ -1,4 +1,4 @@
-package org.g_okuyama.messagepicker;
+package org.neging.messagepicker;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class CategoryArrayAdapter extends ArrayAdapter<MessageListData> {
+public class MessageArrayAdapter extends ArrayAdapter<MessageListData> {
     private LayoutInflater mInflater;
     int mLoopCount = 1;
     Context mContext;
 
-    public CategoryArrayAdapter(Context context, int textViewResourceId, List<MessageListData> objects) {
+    public MessageArrayAdapter(Context context, int textViewResourceId, List<MessageListData> objects) {
         super(context, textViewResourceId, objects);
         mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mContext = context;
@@ -23,7 +23,7 @@ public class CategoryArrayAdapter extends ArrayAdapter<MessageListData> {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         //if(convertView == null){
-        convertView = mInflater.inflate(R.layout.category_item, null);
+        convertView = mInflater.inflate(R.layout.message_item, null);
         //}
 
         MessageListData data = (MessageListData)getItem(position);

@@ -1,4 +1,4 @@
-package org.g_okuyama.messagepicker;
+package org.neging.messagepicker;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Notification;

@@ -1,4 +1,4 @@
-package org.g_okuyama.messagepicker;
+package org.neging.messagepicker;
 
 public class MessageListData {
 	private int mDBID;
