@@ -12,6 +12,7 @@
     <style name="MyAppCompat" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:actionBarStyle">@style/my_actionbar_style</item> 
+        <item name="android:actionBarTabStyle">@style/my_actionbar_tab_style</item>  
     	<item name="android:actionMenuTextColor">#ffffff</item>
     </style>
             
@@ -23,4 +24,8 @@
 	<style name="my_actionbar_titletextstyle" parent="android:style/TextAppearance.Holo.Widget.ActionBar.Title">
 		<item name="android:textColor">#ffffff</item>
 	</style>
+	
+	<style name="my_actionbar_tab_style" parent="android:style/Widget.Holo.Light.ActionBar.TabView">
+		<item name="android:background">#333366</item>
+    </style>
 </resources>
