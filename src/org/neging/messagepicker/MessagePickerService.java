@@ -36,12 +36,9 @@ public class MessagePickerService extends AccessibilityService {
         int et = event.getEventType();
 
         if(et == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED){
-        	//TODO:リリース時ははずす
-        	/*
             if(!(checkPackage(event))){
             	return;
             }
-            */
 
             getNotification(event);
         }
@@ -85,19 +82,22 @@ public class MessagePickerService extends AccessibilityService {
                         }
                         
                         //TODO:リリース時ははずす
-                        Log.d(TAG, "viewId = " + viewId);
+                        //TODO：下のnameやcontents以外にはどんな表示があるのか見てみたいが。
+                        //Log.d(TAG, "viewId = " + viewId);
 
                         if (type == 9 || type == 10) {
                             text.put(viewId, value.toString());
                         }
                     }
 
-                    String name = text.get(16908310);
+                    //LINEのときは使わないのでコメントアウト
+                    //String name = text.get(16908310);
+                    String name = null;
                     String contents = text.get(16908358);
                     
-                    if(name == null){
-                    	name = getString(R.string.error_msg);
-                    }
+                    //if(name == null){
+                    //name = getString(R.string.error_msg);
+                    //}
 
                     if(contents == null){
                     	//for XPERIA AX
@@ -118,16 +118,14 @@ public class MessagePickerService extends AccessibilityService {
                     
                     //for LINE
                     String[] str = contents.split("：");
-                    //この条件は後で消す
-                    Log.d(TAG, "length = " + str.length);
                     if(str.length == 2){
                     	name = str[0];
                     	contents = str[1];
                     }
                     else{
+                    	//海外用。「:」が半角。
                     	str = null;
                     	str = contents.split(":");
-                        Log.d(TAG, "length = " + str.length);
                         if(str.length == 2){
                         	name = str[0];
                         	contents = str[1];
@@ -153,10 +151,10 @@ public class MessagePickerService extends AccessibilityService {
     }
 
     private boolean checkPackage(AccessibilityEvent event){
-        String cls = event.getClassName().toString();
+        //String cls = event.getClassName().toString();
         String pkg = event.getPackageName().toString();
 
-        Log.d(TAG, "cls = " + cls + "," + "pkg = " + pkg);
+        //Log.d(TAG, "cls = " + cls + "," + "pkg = " + pkg);
 
         //LINEを判定
         if(pkg.equalsIgnoreCase("jp.naver.line.android")){

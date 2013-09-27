@@ -26,9 +26,8 @@
             android:layout_height="wrap_content"
             android:textSize="6pt"
             android:textColor="#808080"
-            android:layout_marginLeft="5pt"
-            android:layout_marginBottom="2pt"
-            android:background="@drawable/balloon"/>
+            android:layout_marginLeft="3pt"
+            android:layout_marginBottom="2pt"/>
 
     </LinearLayout>
 

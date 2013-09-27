@@ -37,6 +37,7 @@ public class MessageArrayAdapter extends ArrayAdapter<MessageListData> {
         TextView date = (TextView)convertView.findViewById(R.id.item_date);
         date.setText(data.getDate());
         
+        /*
         //îwåiêFê›íË
         LinearLayout linearLayout = (LinearLayout)convertView.findViewById(R.id.list_container);
         
@@ -47,6 +48,7 @@ public class MessageArrayAdapter extends ArrayAdapter<MessageListData> {
              linearLayout.setBackgroundColor(mContext.getResources().getColor(R.color.listSecond));
         }
         mLoopCount++;
+        */
 
         return convertView;
     }

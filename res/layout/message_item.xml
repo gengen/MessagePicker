@@ -28,6 +28,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:textSize="5pt"
-	        android:textColor="#808080"
+	        android:textColor="#696969"
             android:paddingRight="2pt"/>
 </LinearLayout>
