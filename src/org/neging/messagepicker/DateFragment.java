@@ -92,7 +92,6 @@ public class DateFragment extends Fragment {
                 }
                 
                 logitem.setDate(date);
-
                 mMessageList.add(logitem);
 
                 c.moveToPrevious();

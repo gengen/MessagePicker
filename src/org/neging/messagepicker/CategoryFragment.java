@@ -86,7 +86,7 @@ public class CategoryFragment extends Fragment {
 
                 mNameList.add(logitem);
 
-                c.moveToPrevious();
+                c.moveToPrevious();                
             }
         }
         c.close();

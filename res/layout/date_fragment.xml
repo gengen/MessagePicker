@@ -11,4 +11,11 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@drawable/background"/>
-</LinearLayout>
+    
+    <com.ad_stir.webview.AdstirWebView  
+		media="MEDIA-120b98d5"
+  		spot="1"
+  		refresh_interval="20"
+  		android:layout_width="fill_parent"
+  		android:layout_height="wrap_content" />
+		</LinearLayout>

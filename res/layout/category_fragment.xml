@@ -8,4 +8,11 @@
             android:id="@+id/message_list_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+    <com.ad_stir.webview.AdstirWebView  
+  		media="MEDIA-120b98d5"
+  		spot="1"
+  		refresh_interval="20"
+  		android:layout_width="fill_parent"
+  		android:layout_height="wrap_content" />
 </LinearLayout>
