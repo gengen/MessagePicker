@@ -1,10 +1,13 @@
 package org.neging.messagepicker;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class CategoryFragment extends Fragment {
+	public static final String TAG = "MessagePicker";
 	public static final int REQUEST_CODE = 1;
 	
     DatabaseHelper mHelper = null;
@@ -141,10 +145,17 @@ public class CategoryFragment extends Fragment {
         	String name = item.getName();
         	intent.putExtra("name", name);
         	startActivityForResult(intent, REQUEST_CODE);
+
+        	//UPナビゲーションで戻ってくるとき用にタブを覚えておく
+            SharedPreferences pref = getActivity().getSharedPreferences(MessagePickerActivity.PREF_KEY, 0);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("navigation", true);
+            editor.commit();
 		}
     }
     
     public void onActivityResult(int requestCode, int resultCode, Intent data){
+    	Log.d(TAG, "onActivityResult");
     	if(requestCode == REQUEST_CODE){
     		if(resultCode == EachMessageListActivity.RESPONSE_DELETE){
     			//カテゴリが削除されたため、表示をクリアする

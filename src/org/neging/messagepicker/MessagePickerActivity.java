@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
@@ -27,7 +28,7 @@ public class MessagePickerActivity extends ActionBarActivity{
     
     ProgressDialog mProgressDialog = null;
     Handler mHandler = new Handler();
-    //boolean mLaunchFlag = false;
+    int mTabId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +39,10 @@ public class MessagePickerActivity extends ActionBarActivity{
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         //actionBar.setDisplayShowTitleEnabled(false); 
 
-        actionBar.addTab(actionBar.newTab().setText(R.string.tab1).setTabListener(
+        actionBar.addTab(actionBar.newTab().setIcon(R.drawable.ic_menu_recent_history).setText(R.string.tab1).setTabListener(
         		new MyTabListener<DateFragment>(this, "tab1", DateFragment.class)));
 
-        actionBar.addTab(actionBar.newTab().setText(R.string.tab2).setTabListener(
+        actionBar.addTab(actionBar.newTab().setIcon(R.drawable.ic_menu_cc).setText(R.string.tab2).setTabListener(
         		new MyTabListener<CategoryFragment>(this, "tab2", CategoryFragment.class)));
         
         Intent intent = new Intent(this, MessagePickerService.class);
@@ -63,15 +64,21 @@ public class MessagePickerActivity extends ActionBarActivity{
         mProgressDialog.setCancelable(false);
     }
     
-    /*
     protected void onResume(){
         super.onResume();
-        
-        if(mLaunchFlag){
-        	
+
+        //UPナビゲーションで戻ってきたときは、元のタブを表示する
+        SharedPreferences pref = getSharedPreferences(PREF_KEY, MODE_PRIVATE);
+        if((pref.getBoolean("navigation", false))){
+        	ActionBar actionBar = getSupportActionBar();
+            actionBar.setSelectedNavigationItem(1);
+            
+            //設定を元に戻す
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("navigation", false);
+            editor.commit();
         }
     }
-    */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -195,9 +202,11 @@ public class MessagePickerActivity extends ActionBarActivity{
     @Override
     protected void onPause(){
     	super.onPause();
-    	
-    	//リソースクリア
-    	//release();
+
+    	//タブを覚えておく
+    	ActionBar bar = getSupportActionBar();
+    	mTabId = bar.getSelectedNavigationIndex();
+    	//Log.d(TAG, "mTabId = " + mTabId);
     }
     
     void release(){

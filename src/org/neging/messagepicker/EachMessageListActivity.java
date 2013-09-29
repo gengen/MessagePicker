@@ -24,14 +24,14 @@ import android.widget.ListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
-public class EachMessageListActivity extends ActionBarActivity {
+public class EachMessageListActivity extends ActionBarActivity{
     public static final String TAG = "MessagePicker";
     public static final int RESPONSE_DELETE = 1;
 
     //初めに読み込むメッセージ数
-    public static final int FIRST_MESSAGE_NUM = 5;
+    public static final int FIRST_MESSAGE_NUM = 10;
     //追加で読み込まれるメッセージ数
-    public static final int ADD_MESSAGE_NUM = 3;
+    public static final int ADD_MESSAGE_NUM = 5;
     //今まで何回読み込まれたか
     public static int mTimes = 0;
     //メッセージ数
@@ -55,7 +55,7 @@ public class EachMessageListActivity extends ActionBarActivity {
         
         Bundle extras = getIntent().getExtras();
         mName = extras.getString("name");
-        Log.d(TAG, "name = " + mName);
+        //Log.d(TAG, "name = " + mName);
         
         setTitle(mName);
         setEachList();
@@ -247,7 +247,6 @@ public class EachMessageListActivity extends ActionBarActivity {
     @Override
     public void onPause() {
         super.onPause();
-        clearView();
     }
     
     @Override
@@ -268,8 +267,8 @@ public class EachMessageListActivity extends ActionBarActivity {
     	case R.id.action_deleteAll:
     		deleteCategory();
     		return true;
-    		
-    	default:
+        	
+        default:
     		return super.onOptionsItemSelected(item);
     	}
     }
@@ -339,6 +338,13 @@ public class EachMessageListActivity extends ActionBarActivity {
         Intent intent = new Intent();
         setResult(RESPONSE_DELETE, intent);
     	finish();
+    }
+    
+    @Override
+    public boolean onSupportNavigateUp(){
+    	Log.d(TAG, "onSupportNavigateUp");
+    	
+		return super.onSupportNavigateUp();
     }
     
     public static class OverScrollListView extends ListView {

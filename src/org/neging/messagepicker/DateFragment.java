@@ -23,9 +23,9 @@ import java.util.ArrayList;
 public class DateFragment extends Fragment {
     public static final String TAG = "MessagePicker";
     //初めに読み込むメッセージ数
-    public static final int FIRST_MESSAGE_NUM = 5;
+    public static final int FIRST_MESSAGE_NUM = 10;
     //追加で読み込まれるメッセージ数
-    public static final int ADD_MESSAGE_NUM = 3;
+    public static final int ADD_MESSAGE_NUM = 5;
     //今まで何回読み込まれたか
     public static int mTimes = 0;
     //メッセージ数
@@ -38,7 +38,7 @@ public class DateFragment extends Fragment {
     ArrayList<MessageListData> mMessageList = null;
     
     static boolean mFlag = false;
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.date_fragment, container, false);
@@ -164,7 +164,6 @@ public class DateFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        clearView();
     }
     
     public static class OverScrollListView extends ListView {

@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="7pt"
-            android:layout_marginLeft="5pt"
+            android:layout_marginLeft="7pt"
             android:background="@drawable/balloon"/>
 
     <TextView
