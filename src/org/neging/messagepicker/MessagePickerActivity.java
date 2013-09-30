@@ -1,5 +1,6 @@
 package org.neging.messagepicker;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -250,6 +251,28 @@ public class MessagePickerActivity extends ActionBarActivity{
         sdf = new SimpleDateFormat("HH:mm");	                	
 
         return sdf.format(time);
+    }
+    
+    @Override
+	public void onDestroy(){
+    	super.onDestroy();
+    	deleteCache(getCacheDir());
+    }
+    
+    public static boolean deleteCache(File dir) {
+        if(dir==null) {
+            return false;
+        }
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteCache(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return dir.delete();
     }
 
 	//デベロッパーページのサンプルのままだとタブ切り替え時に表示が重なる現象が発生したため、いくつか修正

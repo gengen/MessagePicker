@@ -83,7 +83,7 @@ public class MessagePickerService extends AccessibilityService {
                         
                         //TODO:リリース時ははずす
                         //TODO：下のnameやcontents以外にはどんな表示があるのか見てみたいが。
-                        Log.d(TAG, "viewId = " + viewId);
+                        //Log.d(TAG, "viewId = " + viewId);
 
                         if (type == 9 || type == 10) {
                             text.put(viewId, value.toString());
@@ -129,6 +129,28 @@ public class MessagePickerService extends AccessibilityService {
                         if(str.length == 2){
                         	name = str[0];
                         	contents = str[1];
+                        }
+                        else{
+                        	//日本語のスタンプ用。想定は、
+                        	//「○○がスタンプを送信しました」
+                        	//なので、「がスタンプを」でsplitするようにする
+                        	str = null;
+                        	str = contents.split("がスタンプを");
+                        	if(str.length == 2){
+                        		name = str[0];
+                        		contents = "スタンプを" + str[1];
+                        		contents += "スタンプを見るにはLINEを起動してください。";
+                        	}
+                        	else{
+                        		//英語スタンプ用。想定は、
+                        		//「○○ sent a sticker.」
+                        		str = null;
+                        		str = contents.split(" sent a ");
+                        		if(str.length == 2){
+                        			name = str[0];
+                        			contents = "sent a " + str[1];
+                        		}
+                        	}
                         }
                     }
                     
