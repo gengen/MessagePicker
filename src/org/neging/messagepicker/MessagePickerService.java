@@ -83,7 +83,7 @@ public class MessagePickerService extends AccessibilityService {
                         
                         //TODO:リリース時ははずす
                         //TODO：下のnameやcontents以外にはどんな表示があるのか見てみたいが。
-                        //Log.d(TAG, "viewId = " + viewId);
+                        Log.d(TAG, "viewId = " + viewId);
 
                         if (type == 9 || type == 10) {
                             text.put(viewId, value.toString());
