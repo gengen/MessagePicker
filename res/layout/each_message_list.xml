@@ -2,22 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+			  android:background="@drawable/background"              
+              >
 
-<view class="org.neging.messagepicker.EachMessageListActivity$OverScrollListView"
-    android:id="@+id/each_list"
-    android:layout_width="match_parent"
-    android:layout_height="0pt"
-    android:layout_weight="1"
-    android:background="@drawable/background">
-</view>
+    <FrameLayout 
+          android:layout_width="match_parent"
+          android:layout_height="0pt"
+          android:layout_weight="1">
+          
+		<view class="org.neging.messagepicker.EachMessageListActivity$OverScrollListView"
+    		android:id="@+id/each_list"
+    		android:layout_width="match_parent"
+    		android:layout_height="match_parent">
+		</view>
 
+	</FrameLayout>
 
-<com.ad_stir.webview.AdstirWebView  
-	media="MEDIA-120b98d5"
-  	spot="1"
-  	refresh_interval="20"
-  	android:layout_width="fill_parent"
-  	android:layout_height="wrap_content" />
+    <FrameLayout 
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:background="#00000000"
+        android:layout_gravity="bottom" >
+
+       	<com.ad_stir.webview.AdstirWebView  
+			media="MEDIA-120b98d5"
+  			spot="1"
+  			refresh_interval="20"
+  			android:layout_width="fill_parent"
+  			android:layout_height="wrap_content" />
+   	</FrameLayout>
 </LinearLayout>

@@ -4,15 +4,30 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
+              
+    <FrameLayout 
+          android:layout_width="match_parent"
+          android:layout_height="0pt"
+          android:layout_weight="1">
+              
     <ListView
             android:id="@+id/message_list_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+    
+    </FrameLayout>
 
-    <com.ad_stir.webview.AdstirWebView  
-  		media="MEDIA-120b98d5"
-  		spot="1"
-  		refresh_interval="20"
-  		android:layout_width="fill_parent"
-  		android:layout_height="wrap_content" />
+    <FrameLayout 
+          android:layout_width="match_parent"
+          android:layout_height="50sp"
+          android:layout_gravity="bottom" 
+          android:background="#00000000">
+    
+        <com.ad_stir.webview.AdstirWebView  
+	  		media="MEDIA-120b98d5"
+  			spot="1"
+  			refresh_interval="20"
+	  		android:layout_width="fill_parent"
+  			android:layout_height="wrap_content"/>
+    </FrameLayout>
 </LinearLayout>
