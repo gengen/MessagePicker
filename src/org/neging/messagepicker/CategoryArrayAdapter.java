@@ -36,19 +36,6 @@ public class CategoryArrayAdapter extends ArrayAdapter<MessageListData> {
         
         TextView date = (TextView)convertView.findViewById(R.id.item_date);
         date.setText(data.getDate());
-        
-        /*
-        //”wŒiFİ’è
-        LinearLayout linearLayout = (LinearLayout)convertView.findViewById(R.id.list_container);
-        
-        //- ”wŒiF‚ğŒğŒİ‚É“ü‘Ö‚¦‚é
-        if( mLoopCount%2 == 0 ) {
-             linearLayout.setBackgroundColor(mContext.getResources().getColor(R.color.listFirst));
-        } else {
-             linearLayout.setBackgroundColor(mContext.getResources().getColor(R.color.listSecond));
-        }
-        mLoopCount++;
-        */
 
         return convertView;
     }

@@ -310,9 +310,8 @@ public class EachMessageListActivity extends ActionBarActivity{
     		return;
     	}
     	
-    	//TODO:カテゴリ削除用に文言変更
     	new AlertDialog.Builder(this)
-    	.setTitle(R.string.dialog_confirm_title)
+    	.setTitle(mName)
     	.setMessage(getString(R.string.dialog_delete_all_confirm))
     	.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
@@ -342,7 +341,7 @@ public class EachMessageListActivity extends ActionBarActivity{
     
     @Override
     public boolean onSupportNavigateUp(){
-    	Log.d(TAG, "onSupportNavigateUp");
+    	//Log.d(TAG, "onSupportNavigateUp");
     	
 		return super.onSupportNavigateUp();
     }
@@ -360,9 +359,7 @@ public class EachMessageListActivity extends ActionBarActivity{
 			//Log.d(TAG, "OverScroll");
 			//一番上が表示されているときのみメッセージを追加する
 			if(mFlag == false && mCurrentPos == 0){
-				Log.d(TAG, "add");
 				if(mMsgNum > (FIRST_MESSAGE_NUM + (ADD_MESSAGE_NUM * mTimes))){
-					Log.d(TAG, "add2");
 					mFlag = true;
 					addMessageList();
 					mTimes++;

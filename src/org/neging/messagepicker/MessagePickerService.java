@@ -37,11 +37,9 @@ public class MessagePickerService extends AccessibilityService {
         int et = event.getEventType();
 
         if(et == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED){
-        	/*
             if(!(checkPackage(event))){
             	return;
             }
-            */
 
             getNotification(event);
         }
@@ -85,7 +83,7 @@ public class MessagePickerService extends AccessibilityService {
                         }
                         
                         //TODO:リリース時ははずす
-                        //TODO：下のnameやcontents以外にはどんな表示があるのか見てみたいが。
+                        //下のnameやcontents以外にはどんな表示があるのか見てみたいが。
                         //Log.d(TAG, "viewId = " + viewId);
 
                         if (type == 9 || type == 10) {
@@ -113,8 +111,8 @@ public class MessagePickerService extends AccessibilityService {
                     	}
                     }
                     
-                    Log.d(TAG, "name = " + name);
-                    Log.d(TAG, "contents = " + contents);
+                    //Log.d(TAG, "name = " + name);
+                    //Log.d(TAG, "contents = " + contents);
                     
                     //getEventTimeだと起動時からの時間しか取れないため使用しない
                     //long time = event.getEventTime();
@@ -138,8 +136,8 @@ public class MessagePickerService extends AccessibilityService {
                     	}
                     }
                     
-                    Log.d(TAG, "name = " + name);
-                    Log.d(TAG, "contents = " + contents);
+                    //Log.d(TAG, "name = " + name);
+                    //Log.d(TAG, "contents = " + contents);
                     
                     //DBに格納
                     ContentValues values = new ContentValues();

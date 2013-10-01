@@ -21,7 +21,7 @@ This service records notification of LINE application.
 <string name="ng">Cancel</string>
 
 <string name="split_char_1">:</string>
-<string name="split_char_2">sent a </string>
+<string name="split_char_2"> sent a </string>
 <string name="stamp_prefix">sent a </string>
 <string name="stamp_suffix">. Please launch LINE application.</string>
 

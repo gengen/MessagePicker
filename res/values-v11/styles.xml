@@ -26,6 +26,6 @@
 	</style>
 	
 	<style name="my_actionbar_tab_style" parent="android:style/Widget.Holo.Light.ActionBar.TabView">
-		<item name="android:background">#3b4555</item>
+		<item name="android:background">@drawable/mytab</item>
     </style>
 </resources>

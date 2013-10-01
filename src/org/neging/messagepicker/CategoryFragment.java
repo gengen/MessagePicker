@@ -155,7 +155,7 @@ public class CategoryFragment extends Fragment {
     }
     
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-    	Log.d(TAG, "onActivityResult");
+    	//Log.d(TAG, "onActivityResult");
     	if(requestCode == REQUEST_CODE){
     		if(resultCode == EachMessageListActivity.RESPONSE_DELETE){
     			//カテゴリが削除されたため、表示をクリアする
