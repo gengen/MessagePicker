@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class MessagePickerService extends AccessibilityService {
@@ -36,9 +37,11 @@ public class MessagePickerService extends AccessibilityService {
         int et = event.getEventType();
 
         if(et == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED){
+        	/*
             if(!(checkPackage(event))){
             	return;
             }
+            */
 
             getNotification(event);
         }
@@ -90,14 +93,13 @@ public class MessagePickerService extends AccessibilityService {
                         }
                     }
 
-                    //LINEのときは使わないのでコメントアウト
-                    //String name = text.get(16908310);
-                    String name = null;
+                    String name = text.get(16908310);
+                    //String name = null;
                     String contents = text.get(16908358);
                     
-                    //if(name == null){
-                    //name = getString(R.string.error_msg);
-                    //}
+                    if(name == null){
+                    	name = "LINE";
+                    }
 
                     if(contents == null){
                     	//for XPERIA AX
@@ -107,51 +109,33 @@ public class MessagePickerService extends AccessibilityService {
                     		if(contents == null){
                     			//テキストもnullの場合はエラーメッセージを設定
                     			contents = getString(R.string.error_msg);
-                    			//TODO:スタンプのときなどはどうなるか、検証必要
                     		}
                     	}
                     }
+                    
+                    Log.d(TAG, "name = " + name);
+                    Log.d(TAG, "contents = " + contents);
                     
                     //getEventTimeだと起動時からの時間しか取れないため使用しない
                     //long time = event.getEventTime();
                     long time = System.currentTimeMillis();
                     
-                    //for LINE
-                    String[] str = contents.split("：");
+                    String[] str;
+                	str = contents.split(getString(R.string.split_char_1));
                     if(str.length == 2){
                     	name = str[0];
                     	contents = str[1];
                     }
                     else{
-                    	//海外用。「:」が半角。
+                    	//スタンプ用。想定は、
+                    	//日本「○○がスタンプを送信しました」、英語「○○ sent a sticker.」
                     	str = null;
-                    	str = contents.split(":");
-                        if(str.length == 2){
-                        	name = str[0];
-                        	contents = str[1];
-                        }
-                        else{
-                        	//日本語のスタンプ用。想定は、
-                        	//「○○がスタンプを送信しました」
-                        	//なので、「がスタンプを」でsplitするようにする
-                        	str = null;
-                        	str = contents.split("がスタンプを");
-                        	if(str.length == 2){
-                        		name = str[0];
-                        		contents = "スタンプを" + str[1];
-                        		contents += "スタンプを見るにはLINEを起動してください。";
-                        	}
-                        	else{
-                        		//英語スタンプ用。想定は、
-                        		//「○○ sent a sticker.」
-                        		str = null;
-                        		str = contents.split(" sent a ");
-                        		if(str.length == 2){
-                        			name = str[0];
-                        			contents = "sent a " + str[1];
-                        		}
-                        	}
-                        }
+                    	str = contents.split(getString(R.string.split_char_2));
+                    	if(str.length == 2){
+                    		name = str[0];
+                    		contents = getString(R.string.stamp_prefix) + str[1];
+                    		contents += getString(R.string.stamp_suffix);
+                    	}
                     }
                     
                     Log.d(TAG, "name = " + name);

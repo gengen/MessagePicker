@@ -10,7 +10,7 @@
 </string>
 <string name="tab1">新着順</string>
 <string name="tab2">友だち別</string>
-<string name="error_msg">通知を取得できませんでした。</string>
+<string name="error_msg">新着メッセージがあります</string>
 <string name="refresh">更新</string>
 <string name="dialog_progress_refresh">更新中</string>
 <string name="list_alert_select">選択</string>
@@ -23,5 +23,10 @@
 </string>
 <string name="ok">OK</string>         
 <string name="ng">キャンセル</string>
+
+<string name="split_char_1">：</string>
+<string name="split_char_2">がスタンプを</string>
+<string name="stamp_prefix">スタンプを</string>
+<string name="stamp_suffix">スタンプを見るにはLINEを起動してください。</string>
 
 </resources>

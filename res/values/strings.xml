@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-<string name="app_name">MessagePicker</string>
+<string name="app_name">Keep unread</string>
 <string name="action_deleteall">Delete All</string>
 <string name="action_refresh">Refresh</string>
 <string name="description">
@@ -9,7 +9,7 @@ This service records notification of LINE application.
 </string>
 <string name="tab1">New</string>
 <string name="tab2">Friends</string>
-<string name="error_msg">Couldn\'t　get messages.</string>
+<string name="error_msg">A new message is arriving.</string>
 <string name="refresh">Refresh</string>
 <string name="dialog_progress_refresh">refreshing</string>
 <string name="list_alert_select">Select</string>
@@ -19,5 +19,10 @@ This service records notification of LINE application.
 <string name="dialog_delete_all_confirm">Delete All?</string>
 <string name="ok">Yes</string>         
 <string name="ng">Cancel</string>
+
+<string name="split_char_1">:</string>
+<string name="split_char_2">sent a </string>
+<string name="stamp_prefix">sent a </string>
+<string name="stamp_suffix">. Please launch LINE application.</string>
 
 </resources>
