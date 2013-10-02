@@ -1,7 +1,6 @@
 package org.neging.messagepicker;
 
 import android.accessibilityservice.AccessibilityService;
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Notification;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -14,11 +13,8 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class MessagePickerServicePreJB extends AccessibilityService {
@@ -41,11 +37,9 @@ public class MessagePickerServicePreJB extends AccessibilityService {
         int et = event.getEventType();
 
         if(et == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED){
-        	/*
             if(!(checkPackage(event))){
             	return;
             }
-            */
         	
             getNotification(event);
         }
@@ -90,7 +84,7 @@ public class MessagePickerServicePreJB extends AccessibilityService {
                         
                         //TODO:リリース時ははずす
                         //下のnameやcontents以外にはどんな表示があるのか見てみたいが。
-                        Log.d(TAG, "viewId = " + viewId);
+                        //Log.d(TAG, "viewId = " + viewId);
 
                         if (type == 9 || type == 10) {
                             text.put(viewId, value.toString());
@@ -106,7 +100,9 @@ public class MessagePickerServicePreJB extends AccessibilityService {
                     }
 
                     if(contents == null){
-                    	//for XPERIA AX
+                    	//for XPERIA AX etc.
+                    	//→XPERIA AXはAPI16なので、MessagePickerService.javaで扱うが、
+                    	//保険のため、以下を入れておく
                     	contents = text.get(16908359);
                     	if(contents == null){
                     		contents = event.getText().toString();
@@ -116,10 +112,7 @@ public class MessagePickerServicePreJB extends AccessibilityService {
                     		}
                     	}
                     }
-                    
-                    //Log.d(TAG, "name = " + name);
-                    //Log.d(TAG, "contents = " + contents);
-                    
+
                     //getEventTimeだと起動時からの時間しか取れないため使用しない
                     //long time = event.getEventTime();
                     long time = System.currentTimeMillis();
@@ -161,10 +154,7 @@ public class MessagePickerServicePreJB extends AccessibilityService {
     }
 
     private boolean checkPackage(AccessibilityEvent event){
-        //String cls = event.getClassName().toString();
         String pkg = event.getPackageName().toString();
-
-        //Log.d(TAG, "cls = " + cls + "," + "pkg = " + pkg);
 
         //LINEを判定
         if(pkg.equalsIgnoreCase("jp.naver.line.android")){
@@ -181,17 +171,6 @@ public class MessagePickerServicePreJB extends AccessibilityService {
     @Override
     protected void onServiceConnected(){
     	//Log.d(TAG, "onServiceConnected");
-
-    	/*
-    	if (isInit) {
-            return;
-        }
-        AccessibilityServiceInfo info = new AccessibilityServiceInfo();
-        info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
-        //info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK;
-        setServiceInfo(info);
-        isInit = true;
-        */
         
         //アクセシビリティで有効にされたことを覚えておく
         SharedPreferences pref = getSharedPreferences(MessagePickerActivity.PREF_KEY, MODE_PRIVATE);

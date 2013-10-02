@@ -32,14 +32,12 @@ public class MessagePickerService extends AccessibilityService {
         }
     }
 
-	@Override
+    @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-    	Log.d(TAG, "onAccessibilityEvent");
     	
         int et = event.getEventType();
 
         if(et == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED){
-        	Log.d(TAG, "TYPE_NOTIFICATION");
             if(!(checkPackage(event))){
             	return;
             }
@@ -52,21 +50,6 @@ public class MessagePickerService extends AccessibilityService {
     }
 
     private void getNotification(AccessibilityEvent event){
-    	String name = "LINE";
-    	String contents = event.getText().toString();
-        long time = System.currentTimeMillis();
-    	
-        //DBに格納
-        ContentValues values = new ContentValues();
-        values.put("name", name);
-        values.put("contents", contents);
-        values.put("time", time);
-        SQLiteDatabase db = mHelper.getWritableDatabase();
-        db.insert("logtable", null, values);
-        db.close();
-        
-    	//TODO:4.2ではNotificationの文字列が取得できなかった。4.3用に作り変える必要あり。
-    	/*
         Parcelable parcel = event.getParcelableData();
         if(!(parcel instanceof Notification)){
             return;
@@ -75,19 +58,17 @@ public class MessagePickerService extends AccessibilityService {
             Notification notification = (Notification)parcel;
             RemoteViews rv = notification.contentView;
             Class secretClass = rv.getClass();
-            
+
             try {
                 Map<Integer, String> text = new HashMap<Integer, String>();
                 Field outerFields[] = secretClass.getDeclaredFields();
-                //Field outerFields[] = secretClass.getSuperclass().getDeclaredFields();
                 for (int i = 0; i < outerFields.length; i++) {
                     if (!outerFields[i].getName().equals("mActions")) continue;
 
                     outerFields[i].setAccessible(true);
                     ArrayList<Object> actions = (ArrayList<Object>)outerFields[i].get(rv);
                     for (Object action : actions) {
-                    	//Field innerFields[] = action.getClass().getDeclaredFields();
-                    	Field innerFields[] = action.getClass().getSuperclass().getDeclaredFields();
+                        Field innerFields[] = action.getClass().getDeclaredFields();                        
                         Object value = null;
                         Integer type = null;
                         Integer viewId = null;
@@ -104,16 +85,12 @@ public class MessagePickerService extends AccessibilityService {
                         
                         //TODO:リリース時ははずす
                         //下のnameやcontents以外にはどんな表示があるのか見てみたいが。
-                        Log.d(TAG, "viewId = " + viewId);
-                        Log.d(TAG, "value = " + value);
+                        //Log.d(TAG, "viewId = " + viewId);
 
                         if (type == 9 || type == 10) {
                             text.put(viewId, value.toString());
                         }
                     }
-                    
-                    //for test
-                    Log.d(TAG, "text = " + text.get(16908294));
 
                     String name = text.get(16908310);
                     //String name = null;
@@ -122,7 +99,7 @@ public class MessagePickerService extends AccessibilityService {
                     if(name == null){
                     	name = "LINE";
                     }
-                    
+
                     if(contents == null){
                     	//for XPERIA AX
                     	contents = text.get(16908359);
@@ -175,7 +152,7 @@ public class MessagePickerService extends AccessibilityService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }*/
+        }
     }
 
     private boolean checkPackage(AccessibilityEvent event){
@@ -198,7 +175,7 @@ public class MessagePickerService extends AccessibilityService {
 
     @Override
     protected void onServiceConnected(){
-    	Log.d(TAG, "onServiceConnected");
+    	//Log.d(TAG, "onServiceConnected");
 
     	/*
     	if (isInit) {

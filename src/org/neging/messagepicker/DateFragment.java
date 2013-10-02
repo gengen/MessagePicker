@@ -43,9 +43,16 @@ public class DateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.date_fragment, container, false);
 
+        initFields();
         setMessageList();
 
         return mView;
+    }
+    
+    void initFields(){
+    	mTimes = 0;
+    	mMsgNum = 0;
+    	mCurrentPos = -1;
     }
 
     void setMessageList(){
@@ -167,6 +174,7 @@ public class DateFragment extends Fragment {
     
     public static class OverScrollListView extends ListView {
     	Context mContext;
+    	boolean isProcessed = false;
 
 		public OverScrollListView(Context context, AttributeSet attrs) {
 			super(context, attrs);
@@ -176,14 +184,25 @@ public class DateFragment extends Fragment {
 		@Override
 		protected void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
 			//Log.d(TAG, "onOverScrolled");
+			
+			if(isProcessed){
+				return;
+			}
+			
+			isProcessed = true;
+			
 			//一番上が表示されているときのみメッセージを追加する
 			if(mFlag == false && mCurrentPos == 0){
-				if(mMsgNum > (FIRST_MESSAGE_NUM + (ADD_MESSAGE_NUM * mTimes))){
+				int currentNum = FIRST_MESSAGE_NUM + (ADD_MESSAGE_NUM * mTimes);
+				Log.d(TAG, "num = " + currentNum);
+				if(mMsgNum > currentNum){
 					mFlag = true;
 					addMessageList();
 					mTimes++;
 				}
 			}
+			
+			isProcessed = false;
 		}
 
 	    void addMessageList(){

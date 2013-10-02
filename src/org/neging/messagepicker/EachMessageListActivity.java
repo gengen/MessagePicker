@@ -55,11 +55,17 @@ public class EachMessageListActivity extends ActionBarActivity{
         
         Bundle extras = getIntent().getExtras();
         mName = extras.getString("name");
-        //Log.d(TAG, "name = " + mName);
-        
         setTitle(mName);
+        
+        initFields();
         setEachList();
         initProgressDialog();
+    }
+    
+    void initFields(){
+    	mTimes = 0;
+    	mMsgNum = 0;
+    	mCurrentPos = -1;
     }
     
     void initProgressDialog(){
@@ -348,6 +354,7 @@ public class EachMessageListActivity extends ActionBarActivity{
     
     public static class OverScrollListView extends ListView {
     	Context mContext;
+    	boolean isProcessed = false;
 
 		public OverScrollListView(Context context, AttributeSet attrs) {
 			super(context, attrs);
@@ -357,14 +364,24 @@ public class EachMessageListActivity extends ActionBarActivity{
 		@Override
 		protected void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
 			//Log.d(TAG, "OverScroll");
+			
+			if(isProcessed){
+				return;
+			}
+			
+			isProcessed = true;
+			
 			//一番上が表示されているときのみメッセージを追加する
 			if(mFlag == false && mCurrentPos == 0){
-				if(mMsgNum > (FIRST_MESSAGE_NUM + (ADD_MESSAGE_NUM * mTimes))){
+				int currentNum = FIRST_MESSAGE_NUM + (ADD_MESSAGE_NUM * mTimes);
+				if(mMsgNum > currentNum){
 					mFlag = true;
 					addMessageList();
 					mTimes++;
 				}
 			}
+			
+			isProcessed = false;
 		}
 
 	    void addMessageList(){
