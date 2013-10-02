@@ -32,7 +32,6 @@ public class MessagePickerService extends AccessibilityService {
         }
     }
 
-	@SuppressLint("NewApi")
 	@Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
     	Log.d(TAG, "onAccessibilityEvent");
@@ -45,20 +44,6 @@ public class MessagePickerService extends AccessibilityService {
             	return;
             }
         	
-        	//for test
-        	String s = event.getText().toString();
-        	if(s != null){
-        		Log.d(TAG, "str = " + s);
-        		//return;
-        	}
-        	
-        	/*
-        	AccessibilityNodeInfo info = event.getSource();
-        	if(info != null){
-        		Log.d(TAG, "info = " + info.getText());
-        	}
-        	*/
-        	
             getNotification(event);
         }
         else{
@@ -67,6 +52,21 @@ public class MessagePickerService extends AccessibilityService {
     }
 
     private void getNotification(AccessibilityEvent event){
+    	String name = "LINE";
+    	String contents = event.getText().toString();
+        long time = System.currentTimeMillis();
+    	
+        //DBに格納
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("contents", contents);
+        values.put("time", time);
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        db.insert("logtable", null, values);
+        db.close();
+        
+    	//TODO:4.2ではNotificationの文字列が取得できなかった。4.3用に作り変える必要あり。
+    	/*
         Parcelable parcel = event.getParcelableData();
         if(!(parcel instanceof Notification)){
             return;
@@ -175,7 +175,7 @@ public class MessagePickerService extends AccessibilityService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     private boolean checkPackage(AccessibilityEvent event){
