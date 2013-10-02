@@ -1,6 +1,7 @@
 package org.neging.messagepicker;
 
 import android.accessibilityservice.AccessibilityService;
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -13,17 +14,16 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class MessagePickerService extends AccessibilityService {
     public static final String TAG = "MessagePicker";
     Toast mToast;
     DatabaseHelper mHelper = null;
+    
+    boolean isInit = false;
 
     @Override
     public void onCreate(){
@@ -32,15 +32,33 @@ public class MessagePickerService extends AccessibilityService {
         }
     }
 
-    @Override
+	@SuppressLint("NewApi")
+	@Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+    	Log.d(TAG, "onAccessibilityEvent");
+    	
         int et = event.getEventType();
 
         if(et == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED){
+        	Log.d(TAG, "TYPE_NOTIFICATION");
             if(!(checkPackage(event))){
             	return;
             }
-
+        	
+        	//for test
+        	String s = event.getText().toString();
+        	if(s != null){
+        		Log.d(TAG, "str = " + s);
+        		//return;
+        	}
+        	
+        	/*
+        	AccessibilityNodeInfo info = event.getSource();
+        	if(info != null){
+        		Log.d(TAG, "info = " + info.getText());
+        	}
+        	*/
+        	
             getNotification(event);
         }
         else{
@@ -57,17 +75,19 @@ public class MessagePickerService extends AccessibilityService {
             Notification notification = (Notification)parcel;
             RemoteViews rv = notification.contentView;
             Class secretClass = rv.getClass();
-
+            
             try {
                 Map<Integer, String> text = new HashMap<Integer, String>();
                 Field outerFields[] = secretClass.getDeclaredFields();
+                //Field outerFields[] = secretClass.getSuperclass().getDeclaredFields();
                 for (int i = 0; i < outerFields.length; i++) {
                     if (!outerFields[i].getName().equals("mActions")) continue;
 
                     outerFields[i].setAccessible(true);
                     ArrayList<Object> actions = (ArrayList<Object>)outerFields[i].get(rv);
                     for (Object action : actions) {
-                        Field innerFields[] = action.getClass().getDeclaredFields();                        
+                    	//Field innerFields[] = action.getClass().getDeclaredFields();
+                    	Field innerFields[] = action.getClass().getSuperclass().getDeclaredFields();
                         Object value = null;
                         Integer type = null;
                         Integer viewId = null;
@@ -84,12 +104,16 @@ public class MessagePickerService extends AccessibilityService {
                         
                         //TODO:リリース時ははずす
                         //下のnameやcontents以外にはどんな表示があるのか見てみたいが。
-                        //Log.d(TAG, "viewId = " + viewId);
+                        Log.d(TAG, "viewId = " + viewId);
+                        Log.d(TAG, "value = " + value);
 
                         if (type == 9 || type == 10) {
                             text.put(viewId, value.toString());
                         }
                     }
+                    
+                    //for test
+                    Log.d(TAG, "text = " + text.get(16908294));
 
                     String name = text.get(16908310);
                     //String name = null;
@@ -98,7 +122,7 @@ public class MessagePickerService extends AccessibilityService {
                     if(name == null){
                     	name = "LINE";
                     }
-
+                    
                     if(contents == null){
                     	//for XPERIA AX
                     	contents = text.get(16908359);
@@ -174,11 +198,25 @@ public class MessagePickerService extends AccessibilityService {
 
     @Override
     protected void onServiceConnected(){
+    	Log.d(TAG, "onServiceConnected");
+
+    	/*
+    	if (isInit) {
+            return;
+        }
+        AccessibilityServiceInfo info = new AccessibilityServiceInfo();
+        info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
+        //info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK;
+        setServiceInfo(info);
+        isInit = true;
+        */
+        
         //アクセシビリティで有効にされたことを覚えておく
         SharedPreferences pref = getSharedPreferences(MessagePickerActivity.PREF_KEY, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putBoolean(MessagePickerActivity.AVAILABLE_KEY, true);
         editor.commit();
+        
     }
 
     @Override

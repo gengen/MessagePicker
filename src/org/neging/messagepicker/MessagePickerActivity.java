@@ -46,8 +46,8 @@ public class MessagePickerActivity extends ActionBarActivity{
         actionBar.addTab(actionBar.newTab().setIcon(R.drawable.ic_menu_cc).setText(R.string.tab2).setTabListener(
         		new MyTabListener<CategoryFragment>(this, "tab2", CategoryFragment.class)));
         
-        Intent intent = new Intent(this, MessagePickerService.class);
-        startService(intent);
+        //Intent intent = new Intent(this, MessagePickerService.class);
+        //startService(intent);
 
         //アクセシビリティ設定が有効でないときは、設定画面を起動する。
         SharedPreferences pref = getSharedPreferences(PREF_KEY, MODE_PRIVATE);
