@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
@@ -16,6 +17,7 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -44,6 +46,7 @@ public class DateFragment extends Fragment {
         mView = inflater.inflate(R.layout.date_fragment, container, false);
 
         initFields();
+        setLayout();
         setMessageList();
 
         return mView;
@@ -53,6 +56,14 @@ public class DateFragment extends Fragment {
     	mTimes = 0;
     	mMsgNum = 0;
     	mCurrentPos = -1;
+    }
+    
+    void setLayout(){
+    	//2.3.X‚Åbackground‚ðÝ’è‚·‚é‚ÆTab‚ªd‚È‚Á‚Ä‚µ‚Ü‚Á‚½‚½‚ßAÝ’è‚ÍAPI11ˆÈã‚Æ‚·‚éB
+    	if(Build.VERSION.SDK_INT >= 11){
+    		LinearLayout layout = (LinearLayout)mView.findViewById(R.id.container);
+    		layout.setBackgroundResource(R.drawable.background);
+    	}
     }
 
     void setMessageList(){

@@ -4,6 +4,7 @@
 <string name="app_name">既読回避せよ！</string>
 <string name="action_deleteall">全削除</string>
 <string name="action_refresh">更新</string>
+<string name="action_help">ヘルプ</string>
 <string name="description">
 本サービスは、LINEの通知情報を記録します。\n\n
 警告に表示されるようなテキストの収集などは一切行っておりませんので、ご安心ください。

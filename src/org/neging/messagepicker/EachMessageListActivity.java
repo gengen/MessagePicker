@@ -9,6 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -58,6 +61,7 @@ public class EachMessageListActivity extends ActionBarActivity{
         setTitle(mName);
         
         initFields();
+        setLayout();
         setEachList();
         initProgressDialog();
     }
@@ -66,6 +70,14 @@ public class EachMessageListActivity extends ActionBarActivity{
     	mTimes = 0;
     	mMsgNum = 0;
     	mCurrentPos = -1;
+    }
+    
+    void setLayout(){
+    	//2.3.X‚Åbackground‚ðÝ’è‚·‚é‚ÆTab‚ªd‚È‚Á‚Ä‚µ‚Ü‚Á‚½‚½‚ßAÝ’è‚ÍAPI11ˆÈã‚Æ‚·‚éB
+    	if(Build.VERSION.SDK_INT >= 11){
+    		LinearLayout layout = (LinearLayout)findViewById(R.id.container);
+    		layout.setBackgroundResource(R.drawable.background);
+    	}
     }
     
     void initProgressDialog(){
@@ -274,6 +286,10 @@ public class EachMessageListActivity extends ActionBarActivity{
     		deleteCategory();
     		return true;
         	
+    	case R.id.action_help:
+    		displayHelp();
+    		return true;
+    		
         default:
     		return super.onOptionsItemSelected(item);
     	}
@@ -343,6 +359,12 @@ public class EachMessageListActivity extends ActionBarActivity{
         Intent intent = new Intent();
         setResult(RESPONSE_DELETE, intent);
     	finish();
+    }
+    
+    void displayHelp(){
+    	String url = "http://neging01.web.fc2.com/android/keepunread/top.html";
+    	Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+    	startActivity(intent);
     }
     
     @Override

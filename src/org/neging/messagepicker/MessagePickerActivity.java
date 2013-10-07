@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -98,6 +99,10 @@ public class MessagePickerActivity extends ActionBarActivity{
     		
     	case R.id.action_deleteAll:
     		deleteAll();
+    		return true;
+    		
+    	case R.id.action_help:
+    		displayHelp();
     		return true;
     		
     	default:
@@ -198,6 +203,12 @@ public class MessagePickerActivity extends ActionBarActivity{
     			((CategoryFragment)fragment).clearView();
     		}    			
 		}
+    }
+    
+    void displayHelp(){
+    	String url = "http://neging01.web.fc2.com/android/keepunread/top.html";
+    	Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+    	startActivity(intent);
     }
     
     @Override

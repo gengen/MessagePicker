@@ -4,6 +4,7 @@
 <string name="app_name">Keep unread</string>
 <string name="action_deleteall">Delete All</string>
 <string name="action_refresh">Refresh</string>
+<string name="action_help">Help</string>
 <string name="description">
 This service records notification of LINE application.
 </string>
