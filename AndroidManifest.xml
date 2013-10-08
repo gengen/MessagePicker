@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.neging.messagepicker"
     android:versionCode="3"
-    android:versionName="1.1" >
+    android:versionName="2.0" >
 
-    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="16" android:maxSdkVersion="16"/>
+    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="16"/>
 
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,7 +14,18 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-	        <service 
+	    <service 
+	            android:name="org.neging.messagepicker.MessagePickerServiceJB42" android:enabled="@bool/is_jelly_bean_4_2"
+	            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+				<intent-filter>
+				    <action android:name="android.accessibilityservice.AccessibilityService" />
+  				</intent-filter>
+  				<meta-data 
+  				    android:name="android.accessibilityservice"
+  				    android:resource="@xml/accessibility_service_config" /> 
+  		</service>
+        
+	    <service 
 	            android:name="org.neging.messagepicker.MessagePickerService" android:enabled="@bool/is_jelly_bean"
 	            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
 				<intent-filter>
@@ -23,8 +34,8 @@
   				<meta-data 
   				    android:name="android.accessibilityservice"
   				    android:resource="@xml/accessibility_service_config" /> 
-  			</service>
-            <service
+  		</service>
+        <service
 	            android:name="org.neging.messagepicker.MessagePickerServicePreJB" android:enabled="@bool/is_not_jelly_bean"> 
 				<intent-filter>
 				    <action android:name="android.accessibilityservice.AccessibilityService" /> 

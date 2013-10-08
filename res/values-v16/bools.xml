@@ -1,4 +1,5 @@
 <resources>
+<bool name="is_jelly_bean_4_2">false</bool>    
 <bool name="is_jelly_bean">true</bool>
 <bool name="is_not_jelly_bean">false</bool>
 </resources>
