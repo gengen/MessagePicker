@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -59,7 +60,13 @@ public class DateFragment extends Fragment {
     }
     
     void setLayout(){
-    	//2.3.Xでbackgroundを設定するとTabが重なってしまったため、設定はAPI11以上とする。
+    	//2.3.XでTabの切り替えなどのキーイベントを拾えなかったため、wrap_contentにする
+    	if(Build.VERSION.SDK_INT <= 10){
+    		LinearLayout layout = (LinearLayout)mView.findViewById(R.id.container);
+    		layout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+    	}
+    	
+    	//2.3.Xでbackgroundを設定するとTabに重なってしまったため、設定はAPI11以上とする
     	if(Build.VERSION.SDK_INT >= 11){
     		LinearLayout layout = (LinearLayout)mView.findViewById(R.id.container);
     		layout.setBackgroundResource(R.drawable.background);
