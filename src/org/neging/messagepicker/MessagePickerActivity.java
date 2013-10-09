@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -285,6 +286,13 @@ public class MessagePickerActivity extends ActionBarActivity{
         }
         return dir.delete();
     }
+    
+    //for 2.3
+    //これがないと2.3でFragmentの内容がActionBarにかぶるため追加
+    public static int getContentViewCompat() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH ?
+                   android.R.id.content : R.id.action_bar_activity_content;
+    }
 
 	//デベロッパーページのサンプルのままだとタブ切り替え時に表示が重なる現象が発生したため、いくつか修正
     public static class MyTabListener<T extends Fragment> implements ActionBar.TabListener{
@@ -314,7 +322,7 @@ public class MessagePickerActivity extends ActionBarActivity{
     			// If not, instantiate and add it to the activity
     			mFragment = Fragment.instantiate(mActivity, mClass.getName());
     			//ft.add(android.R.id.content, mFragment, mTag);
-    			mActivity.getSupportFragmentManager().beginTransaction().add(android.R.id.content, mFragment, mTag).commit();
+    			mActivity.getSupportFragmentManager().beginTransaction().add(getContentViewCompat(), mFragment, mTag).commit();
     		} else {
     			// If it exists, simply attach it in order to show it
 				//ft.attach(mFragment);
