@@ -1,11 +1,13 @@
 package org.neging.messagepicker;
 
 import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Notification;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -33,7 +35,6 @@ public class MessagePickerServicePreJB extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-    	
         int et = event.getEventType();
 
         if(et == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED){
@@ -170,14 +171,20 @@ public class MessagePickerServicePreJB extends AccessibilityService {
 
     @Override
     protected void onServiceConnected(){
-    	//Log.d(TAG, "onServiceConnected");
-        
         //アクセシビリティで有効にされたことを覚えておく
         SharedPreferences pref = getSharedPreferences(MessagePickerActivity.PREF_KEY, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putBoolean(MessagePickerActivity.AVAILABLE_KEY, true);
         editor.commit();
         
+        //4.0以前はmanifestのmeta-dataは認識しないため、ここで設定する。
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH){
+        	AccessibilityServiceInfo info = new AccessibilityServiceInfo();
+        	info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
+        	info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK;
+        	info.notificationTimeout = 100;
+        	setServiceInfo(info);
+        }
     }
 
     @Override
