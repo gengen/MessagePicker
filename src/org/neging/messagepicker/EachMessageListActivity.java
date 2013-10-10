@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -56,6 +57,9 @@ public class EachMessageListActivity extends ActionBarActivity{
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.each_message_list);
+        
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         
         Bundle extras = getIntent().getExtras();
         mName = extras.getString("name");
