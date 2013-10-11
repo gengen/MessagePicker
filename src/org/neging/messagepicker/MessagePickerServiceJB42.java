@@ -114,22 +114,10 @@ public class MessagePickerServiceJB42 extends AccessibilityService {
             //long time = event.getEventTime();
             long time = System.currentTimeMillis();
             
-            String[] str;
-        	str = contents.split(getString(R.string.split_char_1));
-            if(str.length == 2){
-            	name = str[0];
-            	contents = str[1];
-            }
-            else{
-            	//スタンプ用。想定は、
-            	//日本「○○がスタンプを送信しました」、英語「○○ sent a sticker.」
-            	str = null;
-            	str = contents.split(getString(R.string.split_char_2));
-            	if(str.length == 2){
-            		name = str[0];
-            		contents = getString(R.string.stamp_prefix) + str[1];
-            		contents += getString(R.string.stamp_suffix);
-            	}
+            HashMap<String, String> map = analyzeContents(name, contents);
+            if(map != null){
+            	name = map.get("name");
+            	contents = map.get("contents");
             }
             
             //Log.d(TAG, "name = " + name);
@@ -144,6 +132,69 @@ public class MessagePickerServiceJB42 extends AccessibilityService {
             db.insert("logtable", null, values);
             db.close();
         }
+    }
+    
+    HashMap<String, String> analyzeContents(String name, String contents){
+        String[] str;
+    	
+    	HashMap<String, String> map = new HashMap<String, String>();
+    	
+    	//通常のチャット
+    	str = contents.split(getString(R.string.split_char_1));
+        if(str.length == 2){
+        	map.put("name", str[0]);
+        	map.put("contents", str[1]);
+        	return map;
+        }
+
+        //スタンプ用
+        //日本「○○がスタンプを送信しました」、英語「○○ sent a sticker.」
+        str = null;
+        str = contents.split(getString(R.string.split_char_2));
+        if(str.length == 2){
+        	map.put("name", str[0]);
+        	String text = getString(R.string.stamp_prefix) + str[1] + getString(R.string.stamp_suffix);
+        	map.put("contents", text);
+        	return map;
+        }
+        
+        //着信用
+        //タイトル：「LINE ○○からの着信です」、テキスト：「○○との無料通話」
+        if(name.length() != 4){
+        	Log.d(TAG, "length = " + name.length());
+        	str = null;
+        	str = contents.split("との無料");
+        	if(str.length == 2){
+            	map.put("name", str[0]);
+            	map.put("contents", "着信です。");
+            	return map;
+        	}
+        	else{
+        		return null;
+        	}
+        }
+        
+        //通話用
+        //「○○との無料通話」
+    	str = null;
+    	str = contents.split("との無料");
+    	if(str.length == 2){
+        	map.put("name", str[0]);
+        	map.put("contents", "無料通話");
+        	return map;
+    	}
+    	
+    	//不在着信用
+    	//「○○:不在着信」
+    	str = null;
+    	str = contents.split(":");
+    	if(str.length == 2){
+        	map.put("name", str[0]);
+        	map.put("contents", "不在着信");
+        	return map;
+    	}    	
+
+		return null;
     }
 
     private boolean checkPackage(AccessibilityEvent event){

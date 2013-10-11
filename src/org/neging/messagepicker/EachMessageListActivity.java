@@ -36,7 +36,7 @@ public class EachMessageListActivity extends ActionBarActivity{
     //初めに読み込むメッセージ数
     public static final int FIRST_MESSAGE_NUM = 10;
     //追加で読み込まれるメッセージ数
-    public static final int ADD_MESSAGE_NUM = 5;
+    public static final int ADD_MESSAGE_NUM = 2;
     //今まで何回読み込まれたか
     public static int mTimes = 0;
     //メッセージ数
