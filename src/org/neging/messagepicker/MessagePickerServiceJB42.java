@@ -161,7 +161,7 @@ public class MessagePickerServiceJB42 extends AccessibilityService {
         //着信用
         //タイトル：「LINE ○○からの着信です」、テキスト：「○○との無料通話」
         if(name.length() != 4){
-        	Log.d(TAG, "length = " + name.length());
+        	//Log.d(TAG, "length = " + name.length());
         	str = null;
         	str = contents.split("との無料");
         	if(str.length == 2){
