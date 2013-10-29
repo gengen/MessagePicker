@@ -26,4 +26,5 @@ This service records notification of LINE application.
 <string name="stamp_prefix">sent a </string>
 <string name="stamp_suffix">. Please launch LINE application.</string>
 
+<string name="notification_text">A new message is arriving</string>
 </resources>

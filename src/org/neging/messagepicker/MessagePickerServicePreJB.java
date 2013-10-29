@@ -3,12 +3,15 @@ package org.neging.messagepicker;
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Parcelable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.RemoteViews;
@@ -42,7 +45,7 @@ public class MessagePickerServicePreJB extends AccessibilityService {
             	return;
             }
         	
-            getNotification(event);
+            getNotification(event);            
         }
         else{
             return;
@@ -135,6 +138,8 @@ public class MessagePickerServicePreJB extends AccessibilityService {
                     SQLiteDatabase db = mHelper.getWritableDatabase();
                     db.insert("logtable", null, values);
                     db.close();
+                    
+                    displayNotificationArea();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -200,7 +205,7 @@ public class MessagePickerServicePreJB extends AccessibilityService {
         	map.put("name", str[0]);
         	map.put("contents", "ïsç›íÖêM");
         	return map;
-    	}    	
+    	}
 
 		return null;
     }
@@ -212,8 +217,31 @@ public class MessagePickerServicePreJB extends AccessibilityService {
         if(pkg.equalsIgnoreCase("jp.naver.line.android")){
             return true;
         }
+        /*
+        if(!pkg.equalsIgnoreCase("org.neging.messagepicker")){
+            return true;
+        }
+        */
 
         return false;
+    }
+    
+    private void displayNotificationArea(){
+        Intent intent = new Intent(getApplicationContext(), MessagePickerActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(
+        		getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(
+                getApplicationContext());
+        builder.setContentIntent(contentIntent);
+        builder.setTicker(getString(R.string.app_name));
+        builder.setSmallIcon(R.drawable.ic_launcher);
+        builder.setContentTitle(getString(R.string.app_name));
+        builder.setContentText(getString(R.string.notification_text));
+        builder.setAutoCancel(true);
+        
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.notify(R.string.app_name, builder.build());
     }
 
     @Override

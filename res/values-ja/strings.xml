@@ -30,4 +30,6 @@
 <string name="stamp_prefix">スタンプを</string>
 <string name="stamp_suffix">スタンプを見るにはLINEを起動してください。</string>
 
+<string name="notification_text">LINEの新着メッセージがあります。</string>
+
 </resources>
