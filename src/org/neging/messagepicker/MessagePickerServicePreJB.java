@@ -235,7 +235,7 @@ public class MessagePickerServicePreJB extends AccessibilityService {
                 getApplicationContext());
         builder.setContentIntent(contentIntent);
         builder.setTicker(getString(R.string.app_name));
-        builder.setSmallIcon(R.drawable.ic_launcher);
+        builder.setSmallIcon(R.drawable.icon24);
         builder.setContentTitle(getString(R.string.app_name));
         builder.setContentText(getString(R.string.notification_text));
         builder.setAutoCancel(true);
