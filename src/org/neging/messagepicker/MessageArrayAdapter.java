@@ -1,6 +1,7 @@
 package org.neging.messagepicker;
 
 import android.content.Context;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ public class MessageArrayAdapter extends ArrayAdapter<MessageListData> {
         name.setText(data.getName());
 
         TextView contents = (TextView)convertView.findViewById(R.id.item_contents);
+        contents.setAutoLinkMask(Linkify.ALL);
         contents.setText(data.getContents());
         
         TextView date = (TextView)convertView.findViewById(R.id.item_date);
