@@ -29,6 +29,9 @@ public class MessagePickerServicePreJB extends AccessibilityService {
     
     boolean isInit = false;
 
+    //for test
+    boolean testFlag = false;
+    
     @Override
     public void onCreate(){
         if(mHelper == null){
@@ -41,11 +44,25 @@ public class MessagePickerServicePreJB extends AccessibilityService {
         int et = event.getEventType();
 
         if(et == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED){
+        	if(MessagePickerActivity.DEBUG){
+        		Log.d(TAG, "I'm Pre JB");
+        	}
+        	
+        	//for test
+        	/*
             if(!(checkPackage(event))){
             	return;
             }
+            */
         	
-            getNotification(event);            
+        	//for test
+        	//本番はフラグ外す
+        	if(!testFlag){
+        		getNotification(event);
+        	}
+
+            //for test
+        	testFlag = true;        
         }
         else{
             return;
@@ -115,6 +132,11 @@ public class MessagePickerServicePreJB extends AccessibilityService {
                     			contents = getString(R.string.error_msg);
                     		}
                     	}
+                    }
+                    
+                    if(MessagePickerActivity.DEBUG){
+                    	Log.d(TAG, "name = " + name);
+                    	Log.d(TAG, "contents = " + contents);
                     }
 
                     //getEventTimeだと起動時からの時間しか取れないため使用しない

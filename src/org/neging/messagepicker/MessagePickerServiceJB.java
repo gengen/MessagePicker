@@ -21,12 +21,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MessagePickerService extends AccessibilityService {
+public class MessagePickerServiceJB extends AccessibilityService {
     public static final String TAG = "MessagePicker";
     Toast mToast;
     DatabaseHelper mHelper = null;
     
     boolean isInit = false;
+    //for test
+    boolean testFlag = false;
 
     @Override
     public void onCreate(){
@@ -41,11 +43,25 @@ public class MessagePickerService extends AccessibilityService {
         int et = event.getEventType();
 
         if(et == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED){
+        	if(MessagePickerActivity.DEBUG){
+        		Log.d(TAG, "I'm JB");
+        	}
+
+        	//for test
+        	/*
             if(!(checkPackage(event))){
             	return;
             }
+            */
         	
-            getNotification(event);
+        	//for test
+        	//本番はフラグ外す
+        	if(!testFlag){
+        		getNotification(event);
+        	}
+
+            //for test
+        	testFlag = true;
         }
         else{
             return;
@@ -115,8 +131,10 @@ public class MessagePickerService extends AccessibilityService {
                     	}
                     }
                     
-                    //Log.d(TAG, "name = " + name);
-                    //Log.d(TAG, "contents = " + contents);
+                    if(MessagePickerActivity.DEBUG){
+                    	Log.d(TAG, "name = " + name);
+                    	Log.d(TAG, "contents = " + contents);
+                    }
                     
                     //getEventTimeだと起動時からの時間しか取れないため使用しない
                     //long time = event.getEventTime();

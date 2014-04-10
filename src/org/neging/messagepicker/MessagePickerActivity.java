@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +19,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
@@ -28,6 +31,8 @@ public class MessagePickerActivity extends ActionBarActivity{
 	public static final String TAG = "MessagePicker";
     public static final String PREF_KEY = "pref";
     public static final String AVAILABLE_KEY = "available";
+    
+    public static final boolean DEBUG = true;
     
     ProgressDialog mProgressDialog = null;
     Handler mHandler = new Handler();
@@ -96,6 +101,11 @@ public class MessagePickerActivity extends ActionBarActivity{
     	switch (item.getItemId()) {
     	case R.id.action_refresh:
     		refresh();
+
+    		if(DEBUG){
+    			displayNotificationArea();
+    		}
+
     		return true;
     		
     	case R.id.action_deleteAll:
@@ -109,6 +119,24 @@ public class MessagePickerActivity extends ActionBarActivity{
     	default:
     		return super.onOptionsItemSelected(item);
     	}
+    }
+    
+    //for test
+    private void displayNotificationArea(){
+        Intent intent = new Intent(this, MessagePickerActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(
+        		this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setContentIntent(contentIntent);
+        builder.setTicker("テストティッカー");
+        builder.setSmallIcon(R.drawable.icon24);
+        builder.setContentTitle("テストタイトル");
+        builder.setContentText("テストテキスト");
+        builder.setAutoCancel(true);
+        
+        NotificationManager manager = (NotificationManager)getSystemService("notification");
+        manager.notify(R.string.app_name, builder.build());
     }
     
     void refresh(){
