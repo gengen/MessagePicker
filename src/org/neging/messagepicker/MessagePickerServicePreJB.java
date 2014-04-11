@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class MessagePickerServicePreJB extends AccessibilityService {
     public static final String TAG = "MessagePicker";
@@ -55,14 +56,16 @@ public class MessagePickerServicePreJB extends AccessibilityService {
             }
             */
         	
-        	//for test
+        	//for test ここから
         	//本番はフラグ外す
         	if(!testFlag){
         		getNotification(event);
         	}
 
-            //for test
-        	testFlag = true;        
+        	testFlag = true;
+            //for test　ここまで
+        	
+    		//getNotification(event);  
         }
         else{
             return;
@@ -110,6 +113,19 @@ public class MessagePickerServicePreJB extends AccessibilityService {
                         if (type == 9 || type == 10) {
                             text.put(viewId, value.toString());
                         }
+                    }
+                    
+                    if(MessagePickerActivity.DEBUG){
+                    	Log.d(TAG, "size = " + text.size());
+                    	for(int j=0; j<text.size(); j++){
+                    		
+                    	}
+                    	
+                    	Set<Integer> s = text.keySet();
+                    	for(int j: s){
+                    		String item = text.get(j);
+                    		Log.d(TAG, "item " + j + " = " + item);
+                    	}
                     }
 
                     String name = text.get(16908310);

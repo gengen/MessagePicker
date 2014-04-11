@@ -33,7 +33,7 @@ public class CategoryArrayAdapter extends ArrayAdapter<MessageListData> {
         name.setText(data.getName());
 
         TextView contents = (TextView)convertView.findViewById(R.id.item_contents);
-        contents.setAutoLinkMask(Linkify.ALL);
+        //contents.setAutoLinkMask(Linkify.ALL);
         contents.setText(data.getContents());
         
         TextView date = (TextView)convertView.findViewById(R.id.item_date);

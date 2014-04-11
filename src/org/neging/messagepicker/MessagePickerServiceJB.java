@@ -20,6 +20,12 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+import com.google.analytics.tracking.android.StandardExceptionParser;
+import com.google.analytics.tracking.android.Tracker;
 
 public class MessagePickerServiceJB extends AccessibilityService {
     public static final String TAG = "MessagePicker";
@@ -54,14 +60,16 @@ public class MessagePickerServiceJB extends AccessibilityService {
             }
             */
         	
-        	//for test
+        	//for test ここから
         	//本番はフラグ外す
         	if(!testFlag){
         		getNotification(event);
         	}
 
-            //for test
         	testFlag = true;
+            //for test　ここまで
+        	
+    		//getNotification(event);
         }
         else{
             return;
@@ -110,6 +118,15 @@ public class MessagePickerServiceJB extends AccessibilityService {
                             text.put(viewId, value.toString());
                         }
                     }
+                    
+                    if(MessagePickerActivity.DEBUG){
+                    	Log.d(TAG, "size = " + text.size());
+                    	Set<Integer> s = text.keySet();
+                    	for(int j: s){
+                    		String item = text.get(j);
+                    		Log.d(TAG, "item " + j + " = " + item);
+                    	}
+                    }
 
                     String name = text.get(16908310);
                     //String name = null;
@@ -134,6 +151,34 @@ public class MessagePickerServiceJB extends AccessibilityService {
                     if(MessagePickerActivity.DEBUG){
                     	Log.d(TAG, "name = " + name);
                     	Log.d(TAG, "contents = " + contents);
+
+                    	/*
+                    	EasyTracker easyTracker = EasyTracker.getInstance(this);
+                    	// MapBuilder.createEvent().build() returns a Map of event fields and values
+                    	// that are set and sent with the hit.
+                    	easyTracker.send(MapBuilder
+                    			.createEvent("ui_action",     // Event category (required)
+                    					"button_press",  // Event action (required)
+                    					"play_button",   // Event label
+                    					null)            // Event value
+                    					.build()
+                    			);
+                    	*/
+                    	
+                    	EasyTracker easyTracker = EasyTracker.getInstance(this);
+                    	Set<Integer> s = text.keySet();
+                    	int idx = 1;
+                    	for(int j: s){
+                    		String item = text.get(j);
+                    		Log.d(TAG, "item " + j + " = " + item);
+                        	easyTracker.send(MapBuilder
+                        			.createEvent("" + idx++,     // Event category (required)
+                        					"" + j,  // Event action (required)
+                        					item,   // Event label
+                        					null)            // Event value
+                        					.build()
+                        			);
+                    	}
                     }
                     
                     //getEventTimeだと起動時からの時間しか取れないため使用しない

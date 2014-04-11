@@ -4,6 +4,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -59,7 +61,7 @@ public class MessagePickerActivity extends ActionBarActivity{
         //アクセシビリティ設定が有効でないときは、設定画面を起動する。
         SharedPreferences pref = getSharedPreferences(PREF_KEY, MODE_PRIVATE);
         if(!(pref.getBoolean(AVAILABLE_KEY, false))){
-            startActivity(new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS));
+        	startActivity(new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS));
         }
 
         initProgressDialog();
@@ -320,6 +322,18 @@ public class MessagePickerActivity extends ActionBarActivity{
     public static int getContentViewCompat() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH ?
                    android.R.id.content : R.id.action_bar_activity_content;
+    }
+    
+    @Override
+    public void onStart() {
+      super.onStart();
+      EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
+    public void onStop() {
+      super.onStop();
+      EasyTracker.getInstance(this).activityStop(this);
     }
 
 	//デベロッパーページのサンプルのままだとタブ切り替え時に表示が重なる現象が発生したため、いくつか修正

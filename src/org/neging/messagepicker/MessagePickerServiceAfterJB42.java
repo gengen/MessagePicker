@@ -59,14 +59,16 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
             }
             */
         	
-        	//for test
+        	//for test ここから
         	//本番はフラグ外す
         	if(!testFlag){
         		getNotification(event);
         	}
 
-            //for test
-        	testFlag = true;        	
+        	testFlag = true;
+            //for test　ここまで
+        	
+    		//getNotification(event);   	
         }
         else{
             return;
