@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -33,6 +34,7 @@ public class MessagePickerServiceJB extends AccessibilityService {
     DatabaseHelper mHelper = null;
     
     boolean isInit = false;
+    
     //for test
     boolean testFlag = false;
 
@@ -53,13 +55,11 @@ public class MessagePickerServiceJB extends AccessibilityService {
         		Log.d(TAG, "I'm JB");
         	}
 
-        	//for test
-        	/*
             if(!(checkPackage(event))){
             	return;
             }
-            */
         	
+        	/*
         	//for test ここから
         	//本番はフラグ外す
         	if(!testFlag){
@@ -68,8 +68,9 @@ public class MessagePickerServiceJB extends AccessibilityService {
 
         	testFlag = true;
             //for test　ここまで
+            */
         	
-    		//getNotification(event);
+            getNotification(event);  
         }
         else{
             return;
@@ -109,10 +110,6 @@ public class MessagePickerServiceJB extends AccessibilityService {
                                 viewId = field.getInt(action);
                             }
                         }
-                        
-                        //TODO:リリース時ははずす
-                        //下のnameやcontents以外にはどんな表示があるのか見てみたいが。
-                        //Log.d(TAG, "viewId = " + viewId);
 
                         if (type == 9 || type == 10) {
                             text.put(viewId, value.toString());
@@ -129,7 +126,6 @@ public class MessagePickerServiceJB extends AccessibilityService {
                     }
 
                     String name = text.get(16908310);
-                    //String name = null;
                     String contents = text.get(16908358);
                     
                     if(name == null){
@@ -137,10 +133,33 @@ public class MessagePickerServiceJB extends AccessibilityService {
                     }
 
                     if(contents == null){
-                    	//for XPERIA AX
-                    	contents = text.get(16908359);
+                    	int key = getContentsID();
+                    	contents = text.get(key);
+                    	
                     	if(contents == null){
                     		contents = event.getText().toString();
+                    		
+                    		//google analyticsを利用してキーを送信
+                        	EasyTracker easyTracker = EasyTracker.getInstance(this);
+                        	Set<Integer> s = text.keySet();
+                        	int idx = 1;
+                        	for(int j: s){
+                        		String item = text.get(j);
+                        		//Log.d(TAG, "item " + j + " = " + item);
+                        		
+                        		int length = 0;
+                        		if(item != null){
+                        			length = item.length();
+                        		}
+                            	easyTracker.send(MapBuilder.createEvent(
+                            			Build.MODEL,		// Event category (required) <-	機種
+                            			"" + j,				// Event action (required)   <- キー
+                            			"" + length,		// Event label               <- コンテンツの長さ
+                            			(long)idx++)		// Event value               <- インデックス
+                            			.build()
+                            			);
+                        	}
+                    		
                     		if(contents == null){
                     			//テキストもnullの場合はエラーメッセージを設定
                     			contents = getString(R.string.error_msg);
@@ -150,65 +169,35 @@ public class MessagePickerServiceJB extends AccessibilityService {
                     
                     if(MessagePickerActivity.DEBUG){
                     	Log.d(TAG, "name = " + name);
-                    	Log.d(TAG, "contents = " + contents);
-
-                    	/*
-                    	EasyTracker easyTracker = EasyTracker.getInstance(this);
-                    	// MapBuilder.createEvent().build() returns a Map of event fields and values
-                    	// that are set and sent with the hit.
-                    	easyTracker.send(MapBuilder
-                    			.createEvent("ui_action",     // Event category (required)
-                    					"button_press",  // Event action (required)
-                    					"play_button",   // Event label
-                    					null)            // Event value
-                    					.build()
-                    			);
-                    	*/
-                    	
-                    	EasyTracker easyTracker = EasyTracker.getInstance(this);
-                    	Set<Integer> s = text.keySet();
-                    	int idx = 1;
-                    	for(int j: s){
-                    		String item = text.get(j);
-                    		Log.d(TAG, "item " + j + " = " + item);
-                        	easyTracker.send(MapBuilder
-                        			.createEvent("" + idx++,     // Event category (required)
-                        					"" + j,  // Event action (required)
-                        					item,   // Event label
-                        					null)            // Event value
-                        					.build()
-                        			);
-                    	}
+                    	Log.d(TAG, "contents = " + contents);                    	
                     }
-                    
-                    //getEventTimeだと起動時からの時間しか取れないため使用しない
-                    //long time = event.getEventTime();
-                    long time = System.currentTimeMillis();
                     
                     HashMap<String, String> map = analyzeContents(name, contents);
                     if(map != null){
                     	name = map.get("name");
                     	contents = map.get("contents");
                     }
-             
+
                     //Log.d(TAG, "name = " + name);
                     //Log.d(TAG, "contents = " + contents);
                     
-                    //DBに格納
-                    ContentValues values = new ContentValues();
-                    values.put("name", name);
-                    values.put("contents", contents);
-                    values.put("time", time);
-                    SQLiteDatabase db = mHelper.getWritableDatabase();
-                    db.insert("logtable", null, values);
-                    db.close();
-                    
+                    insertDB(name, contents);
                     displayNotificationArea();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+    
+    private int getContentsID(){
+    	String device = Build.MODEL;
+    	if(device.equalsIgnoreCase("SO-01E")){
+    		return 16908359;
+    	}
+    	else{
+    		return 16908359;
+    	}
     }
 
     HashMap<String, String> analyzeContents(String name, String contents){
@@ -283,12 +272,21 @@ public class MessagePickerServiceJB extends AccessibilityService {
     	
 		return null;
     }
+    
+    private void insertDB(String name, String contents){
+        long time = System.currentTimeMillis();
+
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("contents", contents);
+        values.put("time", time);
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        db.insert("logtable", null, values);
+        db.close();
+    }
 
     private boolean checkPackage(AccessibilityEvent event){
-        //String cls = event.getClassName().toString();
         String pkg = event.getPackageName().toString();
-
-        //Log.d(TAG, "cls = " + cls + "," + "pkg = " + pkg);
 
         //LINEを判定
         if(pkg.equalsIgnoreCase("jp.naver.line.android")){
@@ -330,6 +328,9 @@ public class MessagePickerServiceJB extends AccessibilityService {
         editor.putBoolean(MessagePickerActivity.AVAILABLE_KEY, true);
         editor.commit();
         
+        Intent intent = new Intent(getApplicationContext(), MessagePickerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @Override

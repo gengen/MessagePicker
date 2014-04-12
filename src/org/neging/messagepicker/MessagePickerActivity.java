@@ -34,7 +34,7 @@ public class MessagePickerActivity extends ActionBarActivity{
     public static final String PREF_KEY = "pref";
     public static final String AVAILABLE_KEY = "available";
     
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     
     ProgressDialog mProgressDialog = null;
     Handler mHandler = new Handler();
@@ -43,7 +43,6 @@ public class MessagePickerActivity extends ActionBarActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
         
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -54,9 +53,6 @@ public class MessagePickerActivity extends ActionBarActivity{
 
         actionBar.addTab(actionBar.newTab().setIcon(R.drawable.ic_menu_cc).setText(R.string.tab2).setTabListener(
         		new MyTabListener<CategoryFragment>(this, "tab2", CategoryFragment.class)));
-        
-        //Intent intent = new Intent(this, MessagePickerService.class);
-        //startService(intent);
 
         //アクセシビリティ設定が有効でないときは、設定画面を起動する。
         SharedPreferences pref = getSharedPreferences(PREF_KEY, MODE_PRIVATE);

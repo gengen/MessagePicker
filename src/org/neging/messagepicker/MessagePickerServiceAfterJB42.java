@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class MessagePickerServiceAfterJB42 extends AccessibilityService {
     public static final String TAG = "MessagePicker";
@@ -32,9 +33,6 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
     DatabaseHelper mHelper = null;
     
     boolean isInit = false;
-    
-    //for test
-    boolean testFlag = false;
 
     @Override
     public void onCreate(){
@@ -52,23 +50,11 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
         		Log.d(TAG, "I'm After JB4.2");
         	}
         	
-        	//for test
-        	/*
             if(!(checkPackage(event))){
             	return;
             }
-            */
         	
-        	//for test ここから
-        	//本番はフラグ外す
-        	if(!testFlag){
-        		getNotification(event);
-        	}
-
-        	testFlag = true;
-            //for test　ここまで
-        	
-    		//getNotification(event);   	
+    		getNotification(event);   	
         }
         else{
             return;
@@ -85,14 +71,11 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
         	if(n == null){
         		return;
         	}
-
-        	//String text = n.tickerText.toString();
-        	//Log.d(TAG, "text = " + text);
         	
 			LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			ViewGroup localView = (ViewGroup) inflater.inflate(n.contentView.getLayoutId(), null);
 			n.contentView.reapply(getApplicationContext(), localView);
-
+            
 			View tv = localView.findViewById(16908358);
 			String contents = null;
 			if (tv != null && tv instanceof TextView){
@@ -134,10 +117,6 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
             	Log.d(TAG, "contents = " + contents);
             }
             
-            //getEventTimeだと起動時からの時間しか取れないため使用しない
-            //long time = event.getEventTime();
-            long time = System.currentTimeMillis();
-            
             HashMap<String, String> map = analyzeContents(name, contents);
             if(map != null){
             	name = map.get("name");
@@ -147,15 +126,7 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
             //Log.d(TAG, "name = " + name);
             //Log.d(TAG, "contents = " + contents);
             
-            //DBに格納
-            ContentValues values = new ContentValues();
-            values.put("name", name);
-            values.put("contents", contents);
-            values.put("time", time);
-            SQLiteDatabase db = mHelper.getWritableDatabase();
-            db.insert("logtable", null, values);
-            db.close();
-            
+            insertDB(name, contents);
             displayNotificationArea();
         }
     }
@@ -187,7 +158,6 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
         //着信用
         //タイトル：「LINE ○○からの着信です」、テキスト：「○○との無料通話」
         if(name.length() != 4){
-        	//Log.d(TAG, "length = " + name.length());
         	str = null;
         	str = contents.split("との無料");
         	if(str.length == 2){
@@ -222,12 +192,21 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
 
 		return null;
     }
+    
+    private void insertDB(String name, String contents){
+        long time = System.currentTimeMillis();
+
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("contents", contents);
+        values.put("time", time);
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        db.insert("logtable", null, values);
+        db.close();
+    }
 
     private boolean checkPackage(AccessibilityEvent event){
-        //String cls = event.getClassName().toString();
         String pkg = event.getPackageName().toString();
-
-        //Log.d(TAG, "cls = " + cls + "," + "pkg = " + pkg);
 
         //LINEを判定
         if(pkg.equalsIgnoreCase("jp.naver.line.android")){
@@ -262,25 +241,15 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
 
     @Override
     protected void onServiceConnected(){
-    	//Log.d(TAG, "onServiceConnected");
-
-    	/*
-    	if (isInit) {
-            return;
-        }
-        AccessibilityServiceInfo info = new AccessibilityServiceInfo();
-        info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
-        //info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK;
-        setServiceInfo(info);
-        isInit = true;
-        */
-        
         //アクセシビリティで有効にされたことを覚えておく
         SharedPreferences pref = getSharedPreferences(MessagePickerActivity.PREF_KEY, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putBoolean(MessagePickerActivity.AVAILABLE_KEY, true);
         editor.commit();
         
+        Intent intent = new Intent(getApplicationContext(), MessagePickerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @Override

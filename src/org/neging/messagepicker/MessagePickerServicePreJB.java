@@ -23,15 +23,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+
 public class MessagePickerServicePreJB extends AccessibilityService {
     public static final String TAG = "MessagePicker";
     Toast mToast;
     DatabaseHelper mHelper = null;
     
     boolean isInit = false;
-
-    //for test
-    boolean testFlag = false;
     
     @Override
     public void onCreate(){
@@ -48,24 +48,12 @@ public class MessagePickerServicePreJB extends AccessibilityService {
         	if(MessagePickerActivity.DEBUG){
         		Log.d(TAG, "I'm Pre JB");
         	}
-        	
-        	//for test
-        	/*
+
             if(!(checkPackage(event))){
             	return;
             }
-            */
         	
-        	//for test ここから
-        	//本番はフラグ外す
-        	if(!testFlag){
-        		getNotification(event);
-        	}
-
-        	testFlag = true;
-            //for test　ここまで
-        	
-    		//getNotification(event);  
+    		getNotification(event);  
         }
         else{
             return;
@@ -105,10 +93,6 @@ public class MessagePickerServicePreJB extends AccessibilityService {
                                 viewId = field.getInt(action);
                             }
                         }
-                        
-                        //TODO:リリース時ははずす
-                        //下のnameやcontents以外にはどんな表示があるのか見てみたいが。
-                        //Log.d(TAG, "viewId = " + viewId);
 
                         if (type == 9 || type == 10) {
                             text.put(viewId, value.toString());
@@ -116,11 +100,6 @@ public class MessagePickerServicePreJB extends AccessibilityService {
                     }
                     
                     if(MessagePickerActivity.DEBUG){
-                    	Log.d(TAG, "size = " + text.size());
-                    	for(int j=0; j<text.size(); j++){
-                    		
-                    	}
-                    	
                     	Set<Integer> s = text.keySet();
                     	for(int j: s){
                     		String item = text.get(j);
@@ -129,7 +108,6 @@ public class MessagePickerServicePreJB extends AccessibilityService {
                     }
 
                     String name = text.get(16908310);
-                    //String name = null;
                     String contents = text.get(16908358);
                     
                     if(name == null){
@@ -137,27 +115,38 @@ public class MessagePickerServicePreJB extends AccessibilityService {
                     }
 
                     if(contents == null){
-                    	//for XPERIA AX etc.
-                    	//→XPERIA AXはAPI16なので、MessagePickerService.javaで扱うが、
-                    	//保険のため、以下を入れておく
-                    	contents = text.get(16908359);
+                    	int key = getContentsID();
+                    	contents = text.get(key);
                     	if(contents == null){
                     		contents = event.getText().toString();
+                    		
+                    		//google analyticsを利用してキーを送信
+                        	EasyTracker easyTracker = EasyTracker.getInstance(this);
+                        	Set<Integer> s = text.keySet();
+                        	int idx = 1;
+                        	for(int j: s){
+                        		String item = text.get(j);
+                        		//Log.d(TAG, "item " + j + " = " + item);
+                        		
+                        		int length = 0;
+                        		if(item != null){
+                        			length = item.length();
+                        		}
+                            	easyTracker.send(MapBuilder.createEvent(
+                            			Build.MODEL,		// Event category (required) <-	機種
+                            			"" + j,				// Event action (required)   <- キー
+                            			"" + length,		// Event label               <- コンテンツの長さ
+                            			(long)idx++)		// Event value               <- インデックス
+                            			.build()
+                            			);
+                        	}
+                        	
                     		if(contents == null){
                     			//テキストもnullの場合はエラーメッセージを設定
                     			contents = getString(R.string.error_msg);
                     		}
                     	}
                     }
-                    
-                    if(MessagePickerActivity.DEBUG){
-                    	Log.d(TAG, "name = " + name);
-                    	Log.d(TAG, "contents = " + contents);
-                    }
-
-                    //getEventTimeだと起動時からの時間しか取れないため使用しない
-                    //long time = event.getEventTime();
-                    long time = System.currentTimeMillis();
                     
                     HashMap<String, String> map = analyzeContents(name, contents);
                     if(map != null){
@@ -168,21 +157,23 @@ public class MessagePickerServicePreJB extends AccessibilityService {
                     //Log.d(TAG, "name = " + name);
                     //Log.d(TAG, "contents = " + contents);
                     
-                    //DBに格納
-                    ContentValues values = new ContentValues();
-                    values.put("name", name);
-                    values.put("contents", contents);
-                    values.put("time", time);
-                    SQLiteDatabase db = mHelper.getWritableDatabase();
-                    db.insert("logtable", null, values);
-                    db.close();
-                    
+                    insertDB(name, contents);
                     displayNotificationArea();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+    
+    private int getContentsID(){
+    	String device = Build.MODEL;
+    	if(device.equalsIgnoreCase("SO-02C")){
+    		return 16908352;
+    	}
+    	else{
+    		return 16908359;
+    	}
     }
     
     HashMap<String, String> analyzeContents(String name, String contents){
@@ -247,6 +238,18 @@ public class MessagePickerServicePreJB extends AccessibilityService {
 
 		return null;
     }
+    
+    private void insertDB(String name, String contents){
+        long time = System.currentTimeMillis();
+
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("contents", contents);
+        values.put("time", time);
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        db.insert("logtable", null, values);
+        db.close();
+    }
 
     private boolean checkPackage(AccessibilityEvent event){
         String pkg = event.getPackageName().toString();
@@ -255,11 +258,6 @@ public class MessagePickerServicePreJB extends AccessibilityService {
         if(pkg.equalsIgnoreCase("jp.naver.line.android")){
             return true;
         }
-        /*
-        if(!pkg.equalsIgnoreCase("org.neging.messagepicker")){
-            return true;
-        }
-        */
 
         return false;
     }
@@ -302,6 +300,10 @@ public class MessagePickerServicePreJB extends AccessibilityService {
         	info.notificationTimeout = 100;
         	setServiceInfo(info);
         }
+        
+        Intent intent = new Intent(getApplicationContext(), MessagePickerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @Override
