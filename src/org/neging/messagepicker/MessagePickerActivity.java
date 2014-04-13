@@ -34,7 +34,7 @@ public class MessagePickerActivity extends ActionBarActivity{
     public static final String PREF_KEY = "pref";
     public static final String AVAILABLE_KEY = "available";
     
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     
     ProgressDialog mProgressDialog = null;
     Handler mHandler = new Handler();

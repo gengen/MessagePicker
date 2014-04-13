@@ -58,8 +58,8 @@ public class MessagePickerServiceJB extends AccessibilityService {
             if(!(checkPackage(event))){
             	return;
             }
-        	
-        	/*
+
+            /*
         	//for test ここから
         	//本番はフラグ外す
         	if(!testFlag){
@@ -116,57 +116,75 @@ public class MessagePickerServiceJB extends AccessibilityService {
                         }
                     }
                     
-                    if(MessagePickerActivity.DEBUG){
-                    	Log.d(TAG, "size = " + text.size());
-                    	Set<Integer> s = text.keySet();
-                    	for(int j: s){
-                    		String item = text.get(j);
-                    		Log.d(TAG, "item " + j + " = " + item);
-                    	}
-                    }
-
+                    //nameは16908310で決定
                     String name = text.get(16908310);
-                    String contents = text.get(16908358);
-                    
                     if(name == null){
                     	name = "LINE";
                     }
 
+                    //contentsはtextのキーが2つであれば16908310以外を設定する。
+                    //2つでなければ4.1なら16908358、4.1以前なら16908352を設定する。
+                    //ヒットしなければ機種ごとの値を返す。(現状ここまでこない)
+                    String contents = null;
+                    int size = text.size();
+                    if(MessagePickerActivity.DEBUG){
+                    	Log.d(TAG, "size = " + size);
+                    }
+                    
+                    if(size == 2){
+                    	Set<Integer> s = text.keySet();
+                    	for(int j: s){
+                    		if(j == 16908310){
+                    			continue;
+                    		}
+
+                    		if(MessagePickerActivity.DEBUG){
+                            	Log.d(TAG, "index = " + j);
+                            }
+                    		
+                    		contents = text.get(j);
+                    	}
+                    }
+
+                    if(contents == null){
+                    	contents = text.get(16908358);
+                    }
+                    
                     if(contents == null){
                     	int key = getContentsID();
                     	contents = text.get(key);
-                    	
-                    	if(contents == null){
-                    		contents = event.getText().toString();
-                    		
-                    		//google analyticsを利用してキーを送信
-                        	EasyTracker easyTracker = EasyTracker.getInstance(this);
-                        	Set<Integer> s = text.keySet();
-                        	int idx = 1;
-                        	for(int j: s){
-                        		String item = text.get(j);
-                        		//Log.d(TAG, "item " + j + " = " + item);
-                        		
-                        		int length = 0;
-                        		if(item != null){
-                        			length = item.length();
-                        		}
-                            	easyTracker.send(MapBuilder.createEvent(
-                            			Build.MODEL,		// Event category (required) <-	機種
-                            			"" + j,				// Event action (required)   <- キー
-                            			"" + length,		// Event label               <- コンテンツの長さ
-                            			(long)idx++)		// Event value               <- インデックス
-                            			.build()
-                            			);
-                        	}
-                    		
-                    		if(contents == null){
-                    			//テキストもnullの場合はエラーメッセージを設定
-                    			contents = getString(R.string.error_msg);
-                    		}
-                    	}
                     }
                     
+                    if(contents == null){
+                    	contents = event.getText().toString();
+                    		
+                    	//google analyticsを利用してキーを送信
+                    	EasyTracker easyTracker = EasyTracker.getInstance(this);
+                    	Set<Integer> s = text.keySet();
+                    	int idx = 1;
+                    	for(int j: s){
+                    		String item = text.get(j);
+                    		//Log.d(TAG, "item " + j + " = " + item);
+                        		
+                    		int length = 0;
+                    		if(item != null){
+                    			length = item.length();
+                    		}
+                    		easyTracker.send(MapBuilder.createEvent(
+                    				Build.MODEL,		// Event category (required) <-	機種
+                    				"" + j,				// Event action (required)   <- キー
+                    				"" + length,		// Event label               <- コンテンツの長さ
+                    				(long)idx++)		// Event value               <- インデックス
+                    				.build()
+                    				);
+                    	}
+                    }
+            		
+                    if(contents == null){
+                    	//テキストもnullの場合はエラーメッセージを設定
+                    	contents = getString(R.string.error_msg);
+                    }
+
                     if(MessagePickerActivity.DEBUG){
                     	Log.d(TAG, "name = " + name);
                     	Log.d(TAG, "contents = " + contents);                    	
@@ -191,13 +209,9 @@ public class MessagePickerServiceJB extends AccessibilityService {
     }
     
     private int getContentsID(){
-    	String device = Build.MODEL;
-    	if(device.equalsIgnoreCase("SO-01E")){
-    		return 16908359;
-    	}
-    	else{
-    		return 16908359;
-    	}
+    	//現状は16908359のみ返す。
+    	//特別な機種がある場合は、ここで対応する。
+    	return 16908359;
     }
 
     HashMap<String, String> analyzeContents(String name, String contents){

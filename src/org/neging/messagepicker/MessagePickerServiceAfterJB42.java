@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,12 +29,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+
 public class MessagePickerServiceAfterJB42 extends AccessibilityService {
     public static final String TAG = "MessagePicker";
     Toast mToast;
     DatabaseHelper mHelper = null;
     
     boolean isInit = false;
+    
+    //for test
+    boolean testFlag = false;
 
     @Override
     public void onCreate(){
@@ -50,11 +58,22 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
         		Log.d(TAG, "I'm After JB4.2");
         	}
         	
+        	/*
             if(!(checkPackage(event))){
             	return;
             }
+            */
+
+        	//for test ここから
+        	//本番はフラグ外す
+        	if(!testFlag){
+        		getNotification(event);
+        	}
+
+        	testFlag = true;
+            //for test　ここまで
         	
-    		getNotification(event);   	
+        	//getNotification(event);  
         }
         else{
             return;
@@ -76,13 +95,7 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
 			ViewGroup localView = (ViewGroup) inflater.inflate(n.contentView.getLayoutId(), null);
 			n.contentView.reapply(getApplicationContext(), localView);
             
-			View tv = localView.findViewById(16908358);
-			String contents = null;
-			if (tv != null && tv instanceof TextView){
-				contents = ((TextView) tv).getText().toString();
-			}
-			
-			tv = localView.findViewById(android.R.id.title);
+			View tv = localView.findViewById(android.R.id.title);
 			String name = null;
 			if (tv != null && tv instanceof TextView){
 				name = ((TextView) tv).getText().toString();
@@ -95,21 +108,50 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
             if(name == null){
             	name = "LINE";
             }
-
+            
+            //contentsは16908358, 8359, 8360を指定する。
+            String contents = null;
+            tv = localView.findViewById(16908358);
+            if (tv != null && tv instanceof TextView){
+            	contents = ((TextView) tv).getText().toString();
+            }
+			
             if(contents == null){
-            	//for XPERIA AX
     			tv = localView.findViewById(16908359);
     			if (tv != null && tv instanceof TextView){
     				contents = ((TextView) tv).getText().toString();
     			}
+            }
+            
+            if(contents == null){
+    			tv = localView.findViewById(16908360);
+    			if (tv != null && tv instanceof TextView){
+    				contents = ((TextView) tv).getText().toString();
+    			}
+            }
 
-    			if(contents == null){
-            		contents = event.getText().toString();
-            		if(contents == null){
-            			//テキストもnullの場合はエラーメッセージを設定
-            			contents = getString(R.string.error_msg);
-            		}
+            if(contents == null){
+            	contents = event.getText().toString();
+            	
+            	int length = 0;
+            	if(contents != null){
+            		length = contents.length();
             	}
+            	
+            	//google analyticsを利用してキーを送信
+            	EasyTracker easyTracker = EasyTracker.getInstance(this);
+            	easyTracker.send(MapBuilder.createEvent(
+            			Build.MODEL,		// Event category (required) <-	機種
+            			"9999",				// Event action (required)   <- キー
+            			"" + length,		// Event label               <- コンテンツの長さ
+            			(long)9999)			// Event value               <- インデックス
+            			.build()
+            			);
+            }
+
+            if(contents == null){
+            	//テキストもnullの場合はエラーメッセージを設定
+            	contents = getString(R.string.error_msg);
             }
             
             if(MessagePickerActivity.DEBUG){
