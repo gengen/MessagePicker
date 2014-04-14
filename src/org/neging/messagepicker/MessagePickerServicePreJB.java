@@ -201,7 +201,7 @@ public class MessagePickerServicePreJB extends AccessibilityService {
     }
     
     private int getContentsID(){
-    	return 16908358;
+    	return 16908354;
     }
     
     HashMap<String, String> analyzeContents(String name, String contents){
