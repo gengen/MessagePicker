@@ -68,9 +68,9 @@ public class MessagePickerServiceJB extends AccessibilityService {
 
         	testFlag = true;
             //for test　ここまで
-            */
+             */
         	
-            getNotification(event);  
+        	getNotification(event);  
         }
         else{
             return;
@@ -123,8 +123,8 @@ public class MessagePickerServiceJB extends AccessibilityService {
                     }
 
                     //contentsはtextのキーが2つであれば16908310以外を設定する。
-                    //2つでなければ4.1なら16908358、4.1以前なら16908352を設定する。
-                    //ヒットしなければ機種ごとの値を返す。(現状ここまでこない)
+                    //2つでなければ4.1なら16908359、4.1以前なら16908352を設定する。
+                    //ヒットしなければ機種ごとの値を返す(->現状ここまでこない)。
                     String contents = null;
                     int size = text.size();
                     if(MessagePickerActivity.DEBUG){

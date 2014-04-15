@@ -58,12 +58,11 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
         		Log.d(TAG, "I'm After JB4.2");
         	}
         	
-        	/*
             if(!(checkPackage(event))){
             	return;
             }
-            */
 
+            /*
         	//for test ここから
         	//本番はフラグ外す
         	if(!testFlag){
@@ -72,8 +71,9 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
 
         	testFlag = true;
             //for test　ここまで
+            */
         	
-        	//getNotification(event);  
+            getNotification(event);  
         }
         else{
             return;
