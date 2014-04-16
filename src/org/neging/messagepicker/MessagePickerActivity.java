@@ -4,6 +4,9 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import jp.beyond.sdk.Bead;
+import jp.beyond.sdk.Bead.ContentsOrientation;
+
 import com.google.analytics.tracking.android.EasyTracker;
 
 import android.app.AlertDialog;
@@ -26,6 +29,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -39,6 +43,9 @@ public class MessagePickerActivity extends ActionBarActivity{
     ProgressDialog mProgressDialog = null;
     Handler mHandler = new Handler();
     int mTabId = 0;
+    
+    //BEAD ad
+    private Bead mBeadExit = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +68,10 @@ public class MessagePickerActivity extends ActionBarActivity{
         }
 
         initProgressDialog();
+        
+        //BEAD ad
+        mBeadExit = Bead. createExitInstance("df90e2a0ddfc86512087815ead362a0d1cee1734df709cb4", ContentsOrientation.Auto);
+        mBeadExit.requestAd(this);
     }
     
     void initProgressDialog(){
@@ -294,6 +305,12 @@ public class MessagePickerActivity extends ActionBarActivity{
     @Override
 	public void onDestroy(){
     	super.onDestroy();
+    	
+    	// 広告終了
+    	if(mBeadExit != null){
+    		mBeadExit.endAd();
+    	}
+    	
     	deleteCache(getCacheDir());
     }
     
@@ -331,7 +348,13 @@ public class MessagePickerActivity extends ActionBarActivity{
       super.onStop();
       EasyTracker.getInstance(this).activityStop(this);
     }
-
+    
+    @Override
+    public void onBackPressed() {
+    	// 広告ダイアログ表示
+    	mBeadExit.showAd(this);
+    }
+    
 	//デベロッパーページのサンプルのままだとタブ切り替え時に表示が重なる現象が発生したため、いくつか修正
     public static class MyTabListener<T extends Fragment> implements ActionBar.TabListener{
     	private Fragment mFragment;
