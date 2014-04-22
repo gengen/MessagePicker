@@ -111,9 +111,11 @@ public class MessagePickerActivity extends ActionBarActivity{
     	case R.id.action_refresh:
     		refresh();
 
+    		/*
     		if(DEBUG){
     			displayNotificationArea();
     		}
+    		*/
 
     		return true;
     		

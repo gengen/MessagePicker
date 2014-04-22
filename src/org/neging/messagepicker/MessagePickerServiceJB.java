@@ -68,7 +68,7 @@ public class MessagePickerServiceJB extends AccessibilityService {
 
         	testFlag = true;
             //for testÅ@Ç±Ç±Ç‹Ç≈
-             */
+        	*/
         	
         	getNotification(event);  
         }
@@ -111,6 +111,10 @@ public class MessagePickerServiceJB extends AccessibilityService {
                             }
                         }
 
+                        if(type == null){
+                        	continue;
+                        }
+                        
                         if (type == 9 || type == 10) {
                             text.put(viewId, value.toString());
                         }
@@ -301,6 +305,10 @@ public class MessagePickerServiceJB extends AccessibilityService {
 
     private boolean checkPackage(AccessibilityEvent event){
         String pkg = event.getPackageName().toString();
+        
+        if(MessagePickerActivity.DEBUG){
+        	Log.d(TAG, "pkg = " + pkg);
+        }
 
         //LINEÇîªíË
         if(pkg.equalsIgnoreCase("jp.naver.line.android")){

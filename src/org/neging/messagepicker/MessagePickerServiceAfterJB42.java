@@ -57,7 +57,7 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
         	if(MessagePickerActivity.DEBUG){
         		Log.d(TAG, "I'm After JB4.2");
         	}
-        	
+
             if(!(checkPackage(event))){
             	return;
             }

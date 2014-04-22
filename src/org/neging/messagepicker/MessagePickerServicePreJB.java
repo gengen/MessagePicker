@@ -107,6 +107,10 @@ public class MessagePickerServicePreJB extends AccessibilityService {
                                 viewId = field.getInt(action);
                             }
                         }
+                        
+                        if(type == null){
+                        	continue;
+                        }
 
                         if (type == 9 || type == 10) {
                             text.put(viewId, value.toString());
