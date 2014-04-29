@@ -4,10 +4,10 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 import jp.beyond.sdk.Bead;
 import jp.beyond.sdk.Bead.ContentsOrientation;
-
-import com.google.analytics.tracking.android.EasyTracker;
 
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -95,6 +95,10 @@ public class MessagePickerActivity extends ActionBarActivity{
             editor.putBoolean("navigation", false);
             editor.commit();
         }
+        
+        //ホーム押下で再度表示時に表示されないときがあるため追加
+		ActionBar bar = getSupportActionBar();
+		refreshTabMessage(bar.getSelectedNavigationIndex());
     }
 
     @Override
@@ -155,8 +159,14 @@ public class MessagePickerActivity extends ActionBarActivity{
     	mProgressDialog.show();
 
 		ActionBar bar = getSupportActionBar();
-		int id = bar.getSelectedNavigationIndex();
+		refreshTabMessage(bar.getSelectedNavigationIndex());
 		
+		//プログレスダイアログ表示のためのウェイト用スレッド
+        Thread thread = new Thread(runnable);
+        thread.start();
+    }
+    
+    void refreshTabMessage(int id){
 		if(id == 0){
     		Fragment fragment = this.getSupportFragmentManager().findFragmentByTag("tab1");
     		if(fragment instanceof DateFragment){
@@ -172,10 +182,6 @@ public class MessagePickerActivity extends ActionBarActivity{
 		else{
 			//nothing to do
 		}
-		
-		//プログレスダイアログ表示のためのウェイト用スレッド
-        Thread thread = new Thread(runnable);
-        thread.start();
     }
     
     Runnable runnable = new Runnable() {

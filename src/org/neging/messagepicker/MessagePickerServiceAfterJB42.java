@@ -132,7 +132,7 @@ public class MessagePickerServiceAfterJB42 extends AccessibilityService {
 
             if(contents == null){
             	contents = event.getText().toString();
-            	
+
             	int length = 0;
             	if(contents != null){
             		length = contents.length();
