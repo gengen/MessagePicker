@@ -5,6 +5,7 @@ public class MessageListData {
     private String mName = null;
     private String mContents = null;
     private String mDate = null;
+    private boolean mLaunchFlag = false;
 
 	public void setDBID(int id){
 		mDBID = id;
@@ -36,5 +37,13 @@ public class MessageListData {
 
     public String getDate(){
         return mDate;
+    }
+    
+    public void setLaunchFlag(boolean flag){
+    	mLaunchFlag = flag;
+    }
+    
+    public boolean isLaunch(){
+    	return mLaunchFlag;
     }
 }

@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -27,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
 public class EachMessageListActivity extends ActionBarActivity{
@@ -116,7 +118,11 @@ public class EachMessageListActivity extends ActionBarActivity{
                 int dbid = c.getInt(0);
                 logitem.setDBID(dbid);
                 logitem.setName(c.getString(1));
-                logitem.setContents(c.getString(2));
+                String contents = c.getString(2);
+                logitem.setContents(contents);
+                //スタンプの場合はLINEを起動できるようにするためにフラグをセット
+                logitem.setLaunchFlag(contents.startsWith(getString(R.string.stamp_prefix)));
+                
                 //日時は変換してから格納
                 String timeStr = c.getString(3);
                 long time = Long.parseLong(timeStr);
@@ -149,6 +155,8 @@ public class EachMessageListActivity extends ActionBarActivity{
         //表示を一番最後のメッセージにする
         listview.setSelection(rowcount-1);
         listview.setOnItemLongClickListener(new LongClickAdapter());
+        listview.setOnItemClickListener(new ClickAdapter());
+
         //これがないとスクロール時にちらつく
         listview.setScrollingCacheEnabled(false); 
         
@@ -266,6 +274,51 @@ public class EachMessageListActivity extends ActionBarActivity{
     	}
     }
     
+    private class ClickAdapter implements OnItemClickListener{
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+			MessageListData data = mEachList.get(pos);
+			if(!data.isLaunch()){
+				return;
+			}
+			
+			launchLINE();
+		}
+    }
+    
+    private void launchLINE(){
+		//LINEを起動するかどうかの確認ダイアログ
+    	new AlertDialog.Builder(this)
+    	.setTitle(R.string.dialog_confirm_title)
+    	.setMessage(getString(R.string.dialog_line_confirm))
+    	.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				try {
+				    PackageManager pm = getPackageManager();
+				    Intent i = pm.getLaunchIntentForPackage("jp.naver.line.android");
+				    startActivity(i);
+				}
+				catch (Exception e) {
+			    	new AlertDialog.Builder(EachMessageListActivity.this)
+		        	.setTitle(R.string.dialog_notify_title)
+		        	.setMessage(getString(R.string.dialog_error_notify))
+		        	.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+		    			public void onClick(DialogInterface dialog, int which) {
+		    				//nothing to do
+		    			}
+		    		})
+		    		.show();
+				}
+			}
+		})
+		.setNegativeButton(R.string.ng, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				//何もしない
+			}
+		})
+		.show();    	
+    }
+    
     @Override
     public void onPause() {
         super.onPause();
@@ -288,6 +341,10 @@ public class EachMessageListActivity extends ActionBarActivity{
     		
     	case R.id.action_deleteAll:
     		deleteCategory();
+    		return true;
+    		
+    	case R.id.action_line:
+    		launchLINE();
     		return true;
         	
     	case R.id.action_help:

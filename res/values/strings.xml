@@ -4,6 +4,7 @@
 <string name="app_name">Keep unread</string>
 <string name="action_deleteall">Delete All</string>
 <string name="action_refresh">Refresh</string>
+<string name="action_line">LINE</string>
 <string name="action_help">Help</string>
 <string name="description">
 This service records notification of LINE application.
@@ -27,4 +28,8 @@ This service records notification of LINE application.
 <string name="stamp_suffix">. Please launch LINE application.</string>
 
 <string name="notification_text">A new message is arriving</string>
+
+<string name="dialog_line_confirm">Launch LINE?</string>
+<string name="dialog_notify_title">Notify</string>
+<string name="dialog_error_notify">Can\'t launch LINE</string>
 </resources>

@@ -4,6 +4,7 @@
 <string name="app_name">既読回避せよ！</string>
 <string name="action_deleteall">全削除</string>
 <string name="action_refresh">更新</string>
+<string name="action_line">LINE起動</string>
 <string name="action_help">ヘルプ</string>
 <string name="description">
 本サービスは、LINEの通知情報を記録します。\n\n
@@ -19,8 +20,7 @@
 <string name="dialog_confirm_title">確認</string>
 <string name="dialog_delete_confirm">削除しますか？</string>
 <string name="dialog_delete_all_confirm">
-全削除しますか？\n
-※削除後は元に戻せません。
+全削除しますか？\n※削除後は元に戻せません。
 </string>
 <string name="ok">OK</string>         
 <string name="ng">キャンセル</string>
@@ -32,4 +32,9 @@
 
 <string name="notification_text">LINEの新着メッセージがあります。</string>
 
+<string name="dialog_line_confirm">LINEを起動しますか？</string>
+<string name="dialog_notify_title">通知</string>
+<string name="dialog_error_notify">
+起動できませんでした。\nアプリ一覧などからLINEを起動してください。
+</string>
 </resources>

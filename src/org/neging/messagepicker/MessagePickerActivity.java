@@ -16,6 +16,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -125,6 +126,10 @@ public class MessagePickerActivity extends ActionBarActivity{
     		
     	case R.id.action_deleteAll:
     		deleteAll();
+    		return true;
+    		
+    	case R.id.action_line:
+    		launchLINE();
     		return true;
     		
     	case R.id.action_help:
@@ -255,6 +260,39 @@ public class MessagePickerActivity extends ActionBarActivity{
     	String url = "http://neging01.web.fc2.com/android/keepunread/top.html";
     	Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
     	startActivity(intent);
+    }
+    
+    private void launchLINE(){
+		//LINEを起動するかどうかの確認ダイアログ
+    	new AlertDialog.Builder(this)
+    	.setTitle(R.string.dialog_confirm_title)
+    	.setMessage(getString(R.string.dialog_line_confirm))
+    	.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				try {
+				    PackageManager pm = getPackageManager();
+				    Intent i = pm.getLaunchIntentForPackage("jp.naver.line.android");
+				    startActivity(i);
+				}
+				catch (Exception e) {
+			    	new AlertDialog.Builder(MessagePickerActivity.this)
+		        	.setTitle(R.string.dialog_notify_title)
+		        	.setMessage(getString(R.string.dialog_error_notify))
+		        	.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+		    			public void onClick(DialogInterface dialog, int which) {
+		    				//nothing to do
+		    			}
+		    		})
+		    		.show();
+				}
+			}
+		})
+		.setNegativeButton(R.string.ng, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				//何もしない
+			}
+		})
+		.show();    	
     }
     
     @Override

@@ -9,6 +9,13 @@
         android:icon="@drawable/ic_menu_refresh"/>
 
     <item
+        android:id="@+id/action_line"
+        android:orderInCategory="99"
+        yourapp:showAsAction="ifRoom"
+        android:title="@string/action_line"
+        android:icon="@drawable/ic_menu_start_conversation"/>
+
+    <item
         android:id="@+id/action_deleteAll"
         android:orderInCategory="100"
         yourapp:showAsAction="never"
